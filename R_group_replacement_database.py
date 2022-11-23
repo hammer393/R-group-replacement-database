@@ -6,7 +6,7 @@ got_net = Network(height="750px", width="100%", bgcolor="#222222", font_color="w
 
 # set the physics layout of the network
 got_net.barnes_hut()
-got_data = pd.read_csv("C:\\Users\\hqure\Documents\\School folder\\BROCK U\\YEAR 5\\CHEM 3P20\\Presentation\\edges_network_top_subs.csv")
+got_data = pd.read_csv("edges_network_top_subs.csv")
 
 sources = got_data['from']
 targets = got_data['to']
