@@ -1,0 +1,1305 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+                <div id="select-menu" class="card-header">
+                    <div class="row no-gutters">
+                        <div class="col-10 pb-2">
+                            <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="selectNode([value]);"
+                            id="select-node"
+                            placeholder="Select node..."
+                            >
+                                <option selected>Select a Node by ID</option>
+                                
+                                    <option value="*O">*O</option>
+                                
+                                    <option value="*OC">*OC</option>
+                                
+                                    <option value="*N">*N</option>
+                                
+                                    <option value="*CO">*CO</option>
+                                
+                                    <option value="*OC(C)=O">*OC(C)=O</option>
+                                
+                                    <option value="*C(=O)NO">*C(=O)NO</option>
+                                
+                                    <option value="*Cl">*Cl</option>
+                                
+                                    <option value="*OCC">*OCC</option>
+                                
+                                    <option value="*N(C)C">*N(C)C</option>
+                                
+                                    <option value="*S(C)(=O)=O">*S(C)(=O)=O</option>
+                                
+                                    <option value="*NC">*NC</option>
+                                
+                                    <option value="*NC(C)=O">*NC(C)=O</option>
+                                
+                                    <option value="*CN">*CN</option>
+                                
+                                    <option value="*NCc1ccccc1">*NCc1ccccc1</option>
+                                
+                                    <option value="*F">*F</option>
+                                
+                                    <option value="*Br">*Br</option>
+                                
+                                    <option value="*C(F)(F)F">*C(F)(F)F</option>
+                                
+                                    <option value="*C#N">*C#N</option>
+                                
+                                    <option value="*B(O)O">*B(O)O</option>
+                                
+                                    <option value="*SC(F)(F)F">*SC(F)(F)F</option>
+                                
+                                    <option value="*B1OC(C)(C)C(C)(C)O1">*B1OC(C)(C)C(C)(C)O1</option>
+                                
+                                    <option value="*C(F)(F)P(=O)(O)O">*C(F)(F)P(=O)(O)O</option>
+                                
+                                    <option value="*CC">*CC</option>
+                                
+                                    <option value="*C(C)C">*C(C)C</option>
+                                
+                                    <option value="*CCC">*CCC</option>
+                                
+                                    <option value="*C1CC1">*C1CC1</option>
+                                
+                                    <option value="*CCCC">*CCCC</option>
+                                
+                                    <option value="*C=C">*C=C</option>
+                                
+                                    <option value="*C(N)=O">*C(N)=O</option>
+                                
+                                    <option value="*C=NO">*C=NO</option>
+                                
+                                    <option value="*C(=O)O">*C(=O)O</option>
+                                
+                                    <option value="*C(=O)OC">*C(=O)OC</option>
+                                
+                                    <option value="*CC(=O)O">*CC(=O)O</option>
+                                
+                                    <option value="*C(=O)OCC">*C(=O)OCC</option>
+                                
+                                    <option value="*c1nnn[nH]1">*c1nnn[nH]1</option>
+                                
+                                    <option value="*CNC1CC1c1ccccc1">*CNC1CC1c1ccccc1</option>
+                                
+                                    <option value="*C(F)F">*C(F)F</option>
+                                
+                                    <option value="*c1nc2cc(C(N)=O)ccc2[nH]1">*c1nc2cc(C(N)=O)ccc2[nH]1</option>
+                                
+                                    <option value="*Nc1ccccc1C(N)=O">*Nc1ccccc1C(N)=O</option>
+                                
+                                    <option value="*C1CCCCC1">*C1CCCCC1</option>
+                                
+                                    <option value="*CC(C)C">*CC(C)C</option>
+                                
+                                    <option value="*C(C)CC">*C(C)CC</option>
+                                
+                                    <option value="*Cc1ccccc1">*Cc1ccccc1</option>
+                                
+                                    <option value="*CCc1ccccc1">*CCc1ccccc1</option>
+                                
+                                    <option value="*Cc1ccc(OC)cc1">*Cc1ccc(OC)cc1</option>
+                                
+                                    <option value="*Cc1ccc(F)cc1">*Cc1ccc(F)cc1</option>
+                                
+                                    <option value="*Cc1ccc(Cl)cc1">*Cc1ccc(Cl)cc1</option>
+                                
+                                    <option value="*CC1CCCCC1">*CC1CCCCC1</option>
+                                
+                                    <option value="*c1cccnc1">*c1cccnc1</option>
+                                
+                                    <option value="*c1ccncc1">*c1ccncc1</option>
+                                
+                                    <option value="*c1ccccn1">*c1ccccn1</option>
+                                
+                                    <option value="*c1cncnc1">*c1cncnc1</option>
+                                
+                                    <option value="*c1cnn(C)c1">*c1cnn(C)c1</option>
+                                
+                                    <option value="*c1ccc(OC)nc1">*c1ccc(OC)nc1</option>
+                                
+                                    <option value="*c1ccnc(C)c1">*c1ccnc(C)c1</option>
+                                
+                                    <option value="*c1ccncn1">*c1ccncn1</option>
+                                
+                                    <option value="*c1ccc(C(N)=O)cc1">*c1ccc(C(N)=O)cc1</option>
+                                
+                                    <option value="*c1ccnc(OC)c1">*c1ccnc(OC)c1</option>
+                                
+                                    <option value="*CCCCC">*CCCCC</option>
+                                
+                                    <option value="*N(CC)CC">*N(CC)CC</option>
+                                
+                                    <option value="*NCCOC">*NCCOC</option>
+                                
+                                    <option value="*C(=O)NC">*C(=O)NC</option>
+                                
+                                    <option value="*C(=O)NC1CC1">*C(=O)NC1CC1</option>
+                                
+                                    <option value="*C(C)O">*C(C)O</option>
+                                
+                                    <option value="*C(C)(C)O">*C(C)(C)O</option>
+                                
+                                    <option value="*CNC(C)=O">*CNC(C)=O</option>
+                                
+                                    <option value="*COCc1ccccc1">*COCc1ccccc1</option>
+                                
+                                    <option value="*N1CCOCC1">*N1CCOCC1</option>
+                                
+                                    <option value="*N1CCCCC1">*N1CCCCC1</option>
+                                
+                                    <option value="*N1CCN(C)CC1">*N1CCN(C)CC1</option>
+                                
+                                    <option value="*N1CCC(O)CC1">*N1CCC(O)CC1</option>
+                                
+                                    <option value="*N1CCN(C(C)=O)CC1">*N1CCN(C(C)=O)CC1</option>
+                                
+                                    <option value="*N1CCS(=O)(=O)CC1">*N1CCS(=O)(=O)CC1</option>
+                                
+                                    <option value="*[N+](=O)[O-]">*[N+](=O)[O-]</option>
+                                
+                                    <option value="*C(C)(C)C">*C(C)(C)C</option>
+                                
+                                    <option value="*C(C)(C)CO">*C(C)(C)CO</option>
+                                
+                                    <option value="*c1ccc(OC)cc1">*c1ccc(OC)cc1</option>
+                                
+                                    <option value="*c1ccc(F)cc1">*c1ccc(F)cc1</option>
+                                
+                                    <option value="*c1cccc(OC)c1">*c1cccc(OC)c1</option>
+                                
+                                    <option value="*c1ccccc1OC">*c1ccccc1OC</option>
+                                
+                                    <option value="*c1ccc(C(F)(F)F)cc1">*c1ccc(C(F)(F)F)cc1</option>
+                                
+                                    <option value="*c1ccc(C#N)cc1">*c1ccc(C#N)cc1</option>
+                                
+                                    <option value="*c1ccc(Cl)cc1">*c1ccc(Cl)cc1</option>
+                                
+                                    <option value="*c1cccc(F)c1">*c1cccc(F)c1</option>
+                                
+                                    <option value="*c1ccccc1F">*c1ccccc1F</option>
+                                
+                                    <option value="*c1ccc(F)c(F)c1">*c1ccc(F)c(F)c1</option>
+                                
+                                    <option value="*C1CCCC1">*C1CCCC1</option>
+                                
+                                    <option value="*C1CCOCC1">*C1CCOCC1</option>
+                                
+                                    <option value="*C12CC3CC(CC(C3)C1)C2">*C12CC3CC(CC(C3)C1)C2</option>
+                                
+                                    <option value="*CCC(=O)O">*CCC(=O)O</option>
+                                
+                                    <option value="*CC(N)=O">*CC(N)=O</option>
+                                
+                                    <option value="*CC(=O)OC">*CC(=O)OC</option>
+                                
+                                    <option value="*C(C)C(=O)O">*C(C)C(=O)O</option>
+                                
+                                    <option value="*c1cnccn1">*c1cnccn1</option>
+                                
+                                    <option value="*c1nccs1">*c1nccs1</option>
+                                
+                                    <option value="*c1ncccn1">*c1ncccn1</option>
+                                
+                                    <option value="*c1cccc(C)n1">*c1cccc(C)n1</option>
+                                
+                                    <option value="*CCCCCC">*CCCCCC</option>
+                                
+                                    <option value="*CCC(C)C">*CCC(C)C</option>
+                                
+                                    <option value="*CCCCCCCC">*CCCCCCCC</option>
+                                
+                                    <option value="*NC(=O)CC">*NC(=O)CC</option>
+                                
+                                    <option value="*NC(=O)C1CC1">*NC(=O)C1CC1</option>
+                                
+                                    <option value="*NC(=O)CCC">*NC(=O)CCC</option>
+                                
+                                    <option value="*NC(=O)C(C)C">*NC(=O)C(C)C</option>
+                                
+                                    <option value="*NCC">*NCC</option>
+                                
+                                    <option value="*NC1CC1">*NC1CC1</option>
+                                
+                                    <option value="*C(C)=O">*C(C)=O</option>
+                                
+                                    <option value="*C(=O)CC">*C(=O)CC</option>
+                                
+                                    <option value="*C(=O)OC(C)(C)C">*C(=O)OC(C)(C)C</option>
+                                
+                                    <option value="*C(=O)C(F)(F)F">*C(=O)C(F)(F)F</option>
+                                
+                                    <option value="*c1ccc(C)cc1">*c1ccc(C)cc1</option>
+                                
+                                    <option value="*c1cccc(Cl)c1">*c1cccc(Cl)c1</option>
+                                
+                                    <option value="*c1ccccc1Cl">*c1ccccc1Cl</option>
+                                
+                                    <option value="*c1ccc(Br)cc1">*c1ccc(Br)cc1</option>
+                                
+                                    <option value="*N1CCNCC1">*N1CCNCC1</option>
+                                
+                                    <option value="*N1CCN(CC)CC1">*N1CCN(CC)CC1</option>
+                                
+                                    <option value="*N1CCN(CCO)CC1">*N1CCN(CCO)CC1</option>
+                                
+                                    <option value="*N1CCCN(C)CC1">*N1CCCN(C)CC1</option>
+                                
+                                    <option value="*OCc1ccccc1">*OCc1ccccc1</option>
+                                
+                                    <option value="*SCc1ccccc1">*SCc1ccccc1</option>
+                                
+                                    <option value="*CCN">*CCN</option>
+                                
+                                    <option value="*C1CCCN1">*C1CCCN1</option>
+                                
+                                    <option value="*C(C)N">*C(C)N</option>
+                                
+                                    <option value="*CCCc1ccccc1">*CCCc1ccccc1</option>
+                                
+                                    <option value="*C=Cc1ccccc1">*C=Cc1ccccc1</option>
+                                
+                                    <option value="*CCOc1ccccc1">*CCOc1ccccc1</option>
+                                
+                                    <option value="*C1CC1c1ccccc1">*C1CC1c1ccccc1</option>
+                                
+                                    <option value="*N1CCCC1">*N1CCCC1</option>
+                                
+                                    <option value="*N1CCC(C)CC1">*N1CCC(C)CC1</option>
+                                
+                                    <option value="*N1CCC(CO)CC1">*N1CCC(CO)CC1</option>
+                                
+                                    <option value="*c1cccs1">*c1cccs1</option>
+                                
+                                    <option value="*c1ccco1">*c1ccco1</option>
+                                
+                                    <option value="*c1ccsc1">*c1ccsc1</option>
+                                
+                                    <option value="*c1ccc(Cl)s1">*c1ccc(Cl)s1</option>
+                                
+                                    <option value="*C1CCC1">*C1CCC1</option>
+                                
+                                    <option value="*C1CCCO1">*C1CCCO1</option>
+                                
+                                    <option value="*c1cccc(C)c1">*c1cccc(C)c1</option>
+                                
+                                    <option value="*c1ccc(C)c(C)c1">*c1ccc(C)c(C)c1</option>
+                                
+                                    <option value="*Oc1ccccc1">*Oc1ccccc1</option>
+                                
+                                    <option value="*Sc1ccccc1">*Sc1ccccc1</option>
+                                
+                                    <option value="*Oc1ccc(F)cc1">*Oc1ccc(F)cc1</option>
+                                
+                                    <option value="*Oc1ccc(Cl)cc1">*Oc1ccc(Cl)cc1</option>
+                                
+                                    <option value="*Oc1ccc(OC)cc1">*Oc1ccc(OC)cc1</option>
+                                
+                                    <option value="*c1ccc(O)cc1">*c1ccc(O)cc1</option>
+                                
+                                    <option value="*c1cccc(O)c1">*c1cccc(O)c1</option>
+                                
+                                    <option value="*c1ccccc1O">*c1ccccc1O</option>
+                                
+                                    <option value="*c1c[nH]c2ccccc12">*c1c[nH]c2ccccc12</option>
+                                
+                                    <option value="*c1ccc(O)c(O)c1">*c1ccc(O)c(O)c1</option>
+                                
+                                    <option value="*Nc1ccccc1">*Nc1ccccc1</option>
+                                
+                                    <option value="*Nc1ccc(OC)cc1">*Nc1ccc(OC)cc1</option>
+                                
+                                    <option value="*Nc1ccc(F)cc1">*Nc1ccc(F)cc1</option>
+                                
+                                    <option value="*Nc1ccc(C)cc1">*Nc1ccc(C)cc1</option>
+                                
+                                    <option value="*Nc1ccc(Cl)cc1">*Nc1ccc(Cl)cc1</option>
+                                
+                                    <option value="*S(=O)(=O)CC">*S(=O)(=O)CC</option>
+                                
+                                    <option value="*S(=O)(=O)N(C)C">*S(=O)(=O)N(C)C</option>
+                                
+                                    <option value="*CS(C)(=O)=O">*CS(C)(=O)=O</option>
+                                
+                                    <option value="*N1CCC1">*N1CCC1</option>
+                                
+                                    <option value="*N1CCc2ccccc2C1">*N1CCc2ccccc2C1</option>
+                                
+                                    <option value="*c1cccc(C#N)c1">*c1cccc(C#N)c1</option>
+                                
+                                    <option value="*c1ccccc1C#N">*c1ccccc1C#N</option>
+                                
+                                    <option value="*c1cccc(CO)c1">*c1cccc(CO)c1</option>
+                                
+                                    <option value="*CN1CCOCC1">*CN1CCOCC1</option>
+                                
+                                    <option value="*CN1CCCCC1">*CN1CCCCC1</option>
+                                
+                                    <option value="*CN1CCN(C)CC1">*CN1CCN(C)CC1</option>
+                                
+                                    <option value="*I">*I</option>
+                                
+                                    <option value="*C(=O)OCc1ccccc1">*C(=O)OCc1ccccc1</option>
+                                
+                                    <option value="*S(N)(=O)=O">*S(N)(=O)=O</option>
+                                
+                                    <option value="*NCCc1ccccc1">*NCCc1ccccc1</option>
+                                
+                                    <option value="*NC1CCCCC1">*NC1CCCCC1</option>
+                                
+                                    <option value="*NCc1ccc(OC)cc1">*NCc1ccc(OC)cc1</option>
+                                
+                                    <option value="*N(C)Cc1ccccc1">*N(C)Cc1ccccc1</option>
+                                
+                                    <option value="*C(=O)N(C)C">*C(=O)N(C)C</option>
+                                
+                                    <option value="*C(=O)NCC">*C(=O)NCC</option>
+                                
+                                    <option value="*C(=O)NC(C)C">*C(=O)NC(C)C</option>
+                                
+                                    <option value="*CN(C)C">*CN(C)C</option>
+                                
+                                    <option value="*CNC">*CNC</option>
+                                
+                                    <option value="*CNCC">*CNCC</option>
+                                
+                                    <option value="*CNCc1ccccc1">*CNCc1ccccc1</option>
+                                
+                                    <option value="*CNC(C)C">*CNC(C)C</option>
+                                
+                                    <option value="*c1cc(Cl)cc(Cl)c1">*c1cc(Cl)cc(Cl)c1</option>
+                                
+                                    <option value="*C(=O)N1CCOCC1">*C(=O)N1CCOCC1</option>
+                                
+                                    <option value="*SC">*SC</option>
+                                
+                                    <option value="*SCC">*SCC</option>
+                                
+                                    <option value="*C(=O)c1ccccc1">*C(=O)c1ccccc1</option>
+                                
+                                    <option value="*S(=O)(=O)c1ccccc1">*S(=O)(=O)c1ccccc1</option>
+                                
+                                    <option value="*C(=O)c1ccc(F)cc1">*C(=O)c1ccc(F)cc1</option>
+                                
+                                    <option value="*C(=O)c1ccc(Cl)cc1">*C(=O)c1ccc(Cl)cc1</option>
+                                
+                                    <option value="*C(=O)c1ccc(OC)cc1">*C(=O)c1ccc(OC)cc1</option>
+                                
+                                    <option value="*CN1CCCC1">*CN1CCCC1</option>
+                                
+                                    <option value="*c1ccccc1C">*c1ccccc1C</option>
+                                
+                                    <option value="*c1ccccc1C(F)(F)F">*c1ccccc1C(F)(F)F</option>
+                                
+                                    <option value="*c1cccc(Cl)c1Cl">*c1cccc(Cl)c1Cl</option>
+                                
+                                    <option value="*CC(=O)NO">*CC(=O)NO</option>
+                                
+                                    <option value="*CCO">*CCO</option>
+                                
+                                    <option value="*CCCO">*CCCO</option>
+                                
+                                    <option value="*c1ccoc1">*c1ccoc1</option>
+                                
+                                    <option value="*c1ccc[nH]1">*c1ccc[nH]1</option>
+                                
+                                    <option value="*CCCN">*CCCN</option>
+                                
+                                    <option value="*CCCC(=O)O">*CCCC(=O)O</option>
+                                
+                                    <option value="*C=CC(=O)O">*C=CC(=O)O</option>
+                                
+                                    <option value="*c1cc(F)cc(F)c1">*c1cc(F)cc(F)c1</option>
+                                
+                                    <option value="*OC(C)C">*OC(C)C</option>
+                                
+                                    <option value="*NS(C)(=O)=O">*NS(C)(=O)=O</option>
+                                
+                                    <option value="*CCCCCCC">*CCCCCCC</option>
+                                
+                                    <option value="*c1c(F)cccc1F">*c1c(F)cccc1F</option>
+                                
+                                    <option value="*C(=O)N1CCCCC1">*C(=O)N1CCCCC1</option>
+                                
+                                    <option value="*C(=O)N1CCN(C)CC1">*C(=O)N1CCN(C)CC1</option>
+                                
+                                    <option value="*C(=O)N1CCCC1">*C(=O)N1CCCC1</option>
+                                
+                                    <option value="*C(=O)N(CC)CC">*C(=O)N(CC)CC</option>
+                                
+                                    <option value="*OC(F)(F)F">*OC(F)(F)F</option>
+                                
+                                    <option value="*COC">*COC</option>
+                                
+                                    <option value="*COCC">*COCC</option>
+                                
+                                    <option value="*NC1CCCC1">*NC1CCCC1</option>
+                                
+                                    <option value="*C=O">*C=O</option>
+                                
+                                    <option value="*C(=O)Nc1ccccc1">*C(=O)Nc1ccccc1</option>
+                                
+                                    <option value="*C(=O)NCc1ccccc1">*C(=O)NCc1ccccc1</option>
+                                
+                                    <option value="*C(=O)NC1CCCCC1">*C(=O)NC1CCCCC1</option>
+                                
+                                    <option value="*C(=O)Nc1ccc(F)cc1">*C(=O)Nc1ccc(F)cc1</option>
+                                
+                                    <option value="*C(=O)Nc1ccc(Cl)cc1">*C(=O)Nc1ccc(Cl)cc1</option>
+                                
+                                    <option value="*OCCCC">*OCCCC</option>
+                                
+                                    <option value="*c1ccc2ccccc2c1">*c1ccc2ccccc2c1</option>
+                                
+                                    <option value="*c1cccc2ccccc12">*c1cccc2ccccc12</option>
+                                
+                                    <option value="*c1ccc(-c2ccccc2)cc1">*c1ccc(-c2ccccc2)cc1</option>
+                                
+                                    <option value="*c1cc2ccccc2s1">*c1cc2ccccc2s1</option>
+                                
+                                    <option value="*c1csc2ccccc12">*c1csc2ccccc12</option>
+                                
+                                    <option value="*c1ccc2ncccc2c1">*c1ccc2ncccc2c1</option>
+                                
+                                    <option value="*c1cccc2cccnc12">*c1cccc2cccnc12</option>
+                                
+                                    <option value="*c1cccc2ncccc12">*c1cccc2ncccc12</option>
+                                
+                                    <option value="*c1cccc(C(C)=O)c1">*c1cccc(C(C)=O)c1</option>
+                                
+                                    <option value="*OCCC">*OCCC</option>
+                                
+                                    <option value="*NC(=O)c1ccccc1">*NC(=O)c1ccccc1</option>
+                                
+                                    <option value="*NC(=O)Cc1ccccc1">*NC(=O)Cc1ccccc1</option>
+                                
+                                    <option value="*NC(=O)c1ccc(OC)cc1">*NC(=O)c1ccc(OC)cc1</option>
+                                
+                                    <option value="*NC(=O)Nc1ccccc1">*NC(=O)Nc1ccccc1</option>
+                                
+                                    <option value="*NC(=O)c1cccnc1">*NC(=O)c1cccnc1</option>
+                                
+                                    <option value="*c1cn[nH]c1">*c1cn[nH]c1</option>
+                                
+                                    <option value="*c1ccnn1C">*c1ccnn1C</option>
+                                
+                                    <option value="*C(=O)NCCc1ccccc1">*C(=O)NCCc1ccccc1</option>
+                                
+                                    <option value="*n1ccnc1">*n1ccnc1</option>
+                                
+                                    <option value="*n1cncn1">*n1cncn1</option>
+                                
+                                    <option value="*n1ccnc1C">*n1ccnc1C</option>
+                                
+                                    <option value="*NC(C)C">*NC(C)C</option>
+                                
+                                    <option value="*NC(C)(C)C">*NC(C)(C)C</option>
+                                
+                                    <option value="*NCC1CC1">*NCC1CC1</option>
+                                
+                                    <option value="*c1ccc2c(c1)OCO2">*c1ccc2c(c1)OCO2</option>
+                                
+                                    <option value="*c1ccc2c(c1)OCCO2">*c1ccc2c(c1)OCCO2</option>
+                                
+                                    <option value="*CN(CC)CC">*CN(CC)CC</option>
+                                
+                                    <option value="*C#C">*C#C</option>
+                                
+                                    <option value="*c1ccc(OC(C)C)nc1">*c1ccc(OC(C)C)nc1</option>
+                                
+                                    <option value="*C1CCNCC1">*C1CCNCC1</option>
+                                
+                                    <option value="*C1CCN(C)CC1">*C1CCN(C)CC1</option>
+                                
+                                    <option value="*C1CCNC1">*C1CCNC1</option>
+                                
+                                    <option value="*C1=CCNCC1">*C1=CCNCC1</option>
+                                
+                                    <option value="*CCN(C)C">*CCN(C)C</option>
+                                
+                                    <option value="*CCCN(C)C">*CCCN(C)C</option>
+                                
+                                    <option value="*CCNC">*CCNC</option>
+                                
+                                    <option value="*Cc1ccncc1">*Cc1ccncc1</option>
+                                
+                                    <option value="*OCCOC">*OCCOC</option>
+                                
+                                    <option value="*C1CCOC1">*C1CCOC1</option>
+                                
+                                    <option value="*C1CCN(C(C)=O)CC1">*C1CCN(C(C)=O)CC1</option>
+                                
+                                    <option value="*Cn1ccnc1">*Cn1ccnc1</option>
+                                
+                                    <option value="*c1ccc(C(=O)O)cc1">*c1ccc(C(=O)O)cc1</option>
+                                
+                                    <option value="*c1cccc(C(=O)O)c1">*c1cccc(C(=O)O)c1</option>
+                                
+                                    <option value="*OCC(=O)O">*OCC(=O)O</option>
+                                
+                                    <option value="*OCCO">*OCCO</option>
+                                
+                                    <option value="*OCCN(C)C">*OCCN(C)C</option>
+                                
+                                    <option value="*c1ccc(N)cc1">*c1ccc(N)cc1</option>
+                                
+                                    <option value="*c1cccc(C(F)(F)F)c1">*c1cccc(C(F)(F)F)c1</option>
+                                
+                                    <option value="*c1ccc(OC(F)(F)F)cc1">*c1ccc(OC(F)(F)F)cc1</option>
+                                
+                                    <option value="*c1ccc(C(C)(C)C)cc1">*c1ccc(C(C)(C)C)cc1</option>
+                                
+                                    <option value="*c1ccc(C(F)(F)F)nc1">*c1ccc(C(F)(F)F)nc1</option>
+                                
+                                    <option value="*C(=O)NC1CCCC1">*C(=O)NC1CCCC1</option>
+                                
+                                    <option value="*c1nc2ccccc2s1">*c1nc2ccccc2s1</option>
+                                
+                                    <option value="*c1nc2ccccc2o1">*c1nc2ccccc2o1</option>
+                                
+                                    <option value="*c1nc2ccccc2[nH]1">*c1nc2ccccc2[nH]1</option>
+                                
+                                    <option value="*CC1CC1">*CC1CC1</option>
+                                
+                                    <option value="*c1cccc(OC(F)(F)F)c1">*c1cccc(OC(F)(F)F)c1</option>
+                                
+                                    <option value="*C(=O)NCCC">*C(=O)NCCC</option>
+                                
+                                    <option value="*C(=O)NC(C)(C)C">*C(=O)NC(C)(C)C</option>
+                                
+                                    <option value="*NCCO">*NCCO</option>
+                                
+                                    <option value="*NCCCO">*NCCCO</option>
+                                
+                                    <option value="*C(=O)NCCO">*C(=O)NCCO</option>
+                                
+                                    <option value="*c1cc2ccccc2o1">*c1cc2ccccc2o1</option>
+                                
+                                    <option value="*c1cc2ccccc2[nH]1">*c1cc2ccccc2[nH]1</option>
+                                
+                                    <option value="*CN1CCNCC1">*CN1CCNCC1</option>
+                                
+                                    <option value="*OCCN1CCOCC1">*OCCN1CCOCC1</option>
+                                
+                                    <option value="*CCN1CCOCC1">*CCN1CCOCC1</option>
+                                
+                                    <option value="*CCN1CCCCC1">*CCN1CCCCC1</option>
+                                
+                                    <option value="*c1cnc2ccccc2c1">*c1cnc2ccccc2c1</option>
+                                
+                                    <option value="*OCCCN(C)C">*OCCCN(C)C</option>
+                                
+                                    <option value="*Cc1cccnc1">*Cc1cccnc1</option>
+                                
+                                    <option value="*C(=N)N">*C(=N)N</option>
+                                
+                                    <option value="*Cc1ccccn1">*Cc1ccccn1</option>
+                                
+                                    <option value="*CC#N">*CC#N</option>
+                                
+                                    <option value="*c1ccc(Cl)c(Cl)c1">*c1ccc(Cl)c(Cl)c1</option>
+                                
+                                    <option value="*c1ccc(N(C)C)cc1">*c1ccc(N(C)C)cc1</option>
+                                
+                                    <option value="*S(=O)(=O)c1ccc(Cl)cc1">*S(=O)(=O)c1ccc(Cl)cc1</option>
+                                
+                                    <option value="*S">*S</option>
+                                
+                                    <option value="*OCCN1CCCC1">*OCCN1CCCC1</option>
+                                
+                                    <option value="*CCOC">*CCOC</option>
+                                
+                                    <option value="*CC1CCCO1">*CC1CCCO1</option>
+                                
+                                    <option value="*c1ccc(OC)c(OC)c1">*c1ccc(OC)c(OC)c1</option>
+                                
+                                    <option value="*c1ccc([N+](=O)[O-])cc1">*c1ccc([N+](=O)[O-])cc1</option>
+                                
+                                    <option value="*c1cccc([N+](=O)[O-])c1">*c1cccc([N+](=O)[O-])c1</option>
+                                
+                                    <option value="*C#Cc1ccccc1">*C#Cc1ccccc1</option>
+                                
+                                    <option value="*C(=O)Nc1cccnc1">*C(=O)Nc1cccnc1</option>
+                                
+                                    <option value="*C(=O)Nc1ccncc1">*C(=O)Nc1ccncc1</option>
+                                
+                                    <option value="*OCCN1CCCCC1">*OCCN1CCCCC1</option>
+                                
+                                    <option value="*c1ccc(S(N)(=O)=O)cc1">*c1ccc(S(N)(=O)=O)cc1</option>
+                                
+                                    <option value="*CCN1CCCC1">*CCN1CCCC1</option>
+                                
+                                    <option value="*CCN(CC)CC">*CCN(CC)CC</option>
+                                
+                                    <option value="*c1cc[nH]n1">*c1cc[nH]n1</option>
+                                
+                                    <option value="*OCCCN1CCCCC1">*OCCCN1CCCCC1</option>
+                                
+                                    <option value="*OCCCN1CCCC1">*OCCCN1CCCC1</option>
+                                
+                                    <option value="*c1ccc(C(C)=O)cc1">*c1ccc(C(C)=O)cc1</option>
+                                
+                                    <option value="*n1cccn1">*n1cccn1</option>
+                                
+                                    <option value="*NS(N)(=O)=O">*NS(N)(=O)=O</option>
+                                
+                                    <option value="*NS(=O)(=O)c1ccccc1">*NS(=O)(=O)c1ccccc1</option>
+                                
+                                    <option value="*NS(=O)(=O)c1ccc(C)cc1">*NS(=O)(=O)c1ccc(C)cc1</option>
+                                
+                                    <option value="*c1ccc(OCC)cc1">*c1ccc(OCC)cc1</option>
+                                
+                                    <option value="*C=C1SC(=S)NC1=O">*C=C1SC(=S)NC1=O</option>
+                                
+                                    <option value="*c1ccc2[nH]ccc2c1">*c1ccc2[nH]ccc2c1</option>
+                                
+                                    <option value="*c1ccc2cc[nH]c2c1">*c1ccc2cc[nH]c2c1</option>
+                                
+                                    <option value="*c1cccc2[nH]ccc12">*c1cccc2[nH]ccc12</option>
+                                
+                                    <option value="*NCCC">*NCCC</option>
+                                
+                                    <option value="*OCCN">*OCCN</option>
+                                
+                                    <option value="*c1ccc(F)cc1F">*c1ccc(F)cc1F</option>
+                                
+                                    <option value="*c1ccc(N)nc1">*c1ccc(N)nc1</option>
+                                
+                                    <option value="*c1cnc(N)nc1">*c1cnc(N)nc1</option>
+                                
+                                    <option value="*C(=O)NN">*C(=O)NN</option>
+                                
+                                    <option value="*c1cccc(C(F)(F)F)n1">*c1cccc(C(F)(F)F)n1</option>
+                                
+                                    <option value="*c1csc(C)n1">*c1csc(C)n1</option>
+                                
+                                    <option value="*C(=O)NCC1CC1">*C(=O)NCC1CC1</option>
+                                
+                                    <option value="*OCC=C">*OCC=C</option>
+                                
+                                    <option value="*Nc1ccccn1">*Nc1ccccn1</option>
+                                
+                                    <option value="*NC(N)=O">*NC(N)=O</option>
+                                
+                                    <option value="*CC=C">*CC=C</option>
+                                
+                                    <option value="*c1ccc(S(C)(=O)=O)cc1">*c1ccc(S(C)(=O)=O)cc1</option>
+                                
+                                    <option value="*OC(F)F">*OC(F)F</option>
+                                
+                                    <option value="*C(=O)NCCCC">*C(=O)NCCCC</option>
+                                
+                                    <option value="*N1CCC(O)C1">*N1CCC(O)C1</option>
+                                
+                                    <option value="*c1cccc(-c2ccccc2)c1">*c1cccc(-c2ccccc2)c1</option>
+                                
+                                    <option value="*NC(=O)c1ccco1">*NC(=O)c1ccco1</option>
+                                
+                                    <option value="*OCCCN1CCOCC1">*OCCCN1CCOCC1</option>
+                                
+                                    <option value="*c1ccc(CC)cc1">*c1ccc(CC)cc1</option>
+                                
+                                    <option value="*c1cccc(OC)n1">*c1cccc(OC)n1</option>
+                                
+                                    <option value="*NCc1cccnc1">*NCc1cccnc1</option>
+                                
+                                    <option value="*NCc1ccncc1">*NCc1ccncc1</option>
+                                
+                                    <option value="*C=CC(=O)NO">*C=CC(=O)NO</option>
+                                
+                                    <option value="*C(=O)NCCOC">*C(=O)NCCOC</option>
+                                
+                                    <option value="*Cc1cccs1">*Cc1cccs1</option>
+                                
+                                    <option value="*c1cccc(Br)c1">*c1cccc(Br)c1</option>
+                                
+                                    <option value="*NC(=O)C1CCCCC1">*NC(=O)C1CCCCC1</option>
+                                
+                                    <option value="*C#Cc1ccccn1">*C#Cc1ccccn1</option>
+                                
+                                    <option value="*C#Cc1cccnc1">*C#Cc1cccnc1</option>
+                                
+                                    <option value="*c1ncccc1C">*c1ncccc1C</option>
+                                
+                                    <option value="*c1ncccc1C(F)(F)F">*c1ncccc1C(F)(F)F</option>
+                                
+                                    <option value="*c1c(C)noc1C">*c1c(C)noc1C</option>
+                                
+                                    <option value="*Cc1cccc(Cl)c1">*Cc1cccc(Cl)c1</option>
+                                
+                                    <option value="*NC(=O)Nc1ccc(Cl)cc1">*NC(=O)Nc1ccc(Cl)cc1</option>
+                                
+                                    <option value="*OC(C)(C)C">*OC(C)(C)C</option>
+                                
+                                    <option value="*Cc1ccccc1Cl">*Cc1ccccc1Cl</option>
+                                
+                                    <option value="*c1cccnc1OC">*c1cccnc1OC</option>
+                                
+                                    <option value="*NC(=O)c1ccncc1">*NC(=O)c1ccncc1</option>
+                                
+                                    <option value="*NC(=O)c1ccccn1">*NC(=O)c1ccccn1</option>
+                                
+                                    <option value="*OC1CCNCC1">*OC1CCNCC1</option>
+                                
+                                    <option value="*CNC1CCCC1">*CNC1CCCC1</option>
+                                
+                                    <option value="*c1ccc(Cl)nc1">*c1ccc(Cl)nc1</option>
+                                
+                                    <option value="*C=C1SC(=O)NC1=O">*C=C1SC(=O)NC1=O</option>
+                                
+                                    <option value="*c1ccc2ccccc2n1">*c1ccc2ccccc2n1</option>
+                                
+                                    <option value="*c1cncc(OC)c1">*c1cncc(OC)c1</option>
+                                
+                                    <option value="*OCCc1ccccc1">*OCCc1ccccc1</option>
+                                
+                                    <option value="*c1ccc2[nH]ncc2c1">*c1ccc2[nH]ncc2c1</option>
+                                
+                                    <option value="*c1ccc2cn[nH]c2c1">*c1ccc2cn[nH]c2c1</option>
+                                
+                                    <option value="*OC1CCCC1">*OC1CCCC1</option>
+                                
+                                    <option value="*c1ccc(CO)cc1">*c1ccc(CO)cc1</option>
+                                
+                                    <option value="*COc1ccccc1">*COc1ccccc1</option>
+                                
+                                    <option value="*NC(=O)OC(C)(C)C">*NC(=O)OC(C)(C)C</option>
+                                
+                                    <option value="*OCC1CCCO1">*OCC1CCCO1</option>
+                                
+                                    <option value="*c1ccc(C)nc1">*c1ccc(C)nc1</option>
+                                
+                                    <option value="*CC(=O)N(C)C">*CC(=O)N(C)C</option>
+                                
+                                    <option value="*CC(=O)NC">*CC(=O)NC</option>
+                                
+                                    <option value="*N1CCN(c2ccccc2)CC1">*N1CCN(c2ccccc2)CC1</option>
+                                
+                                    <option value="*c1ccc(Cl)cc1Cl">*c1ccc(Cl)cc1Cl</option>
+                                
+                                    <option value="*C(=O)c1cccs1">*C(=O)c1cccs1</option>
+                                
+                                    <option value="*c1ccc(NC(C)=O)cc1">*c1ccc(NC(C)=O)cc1</option>
+                                
+                                    <option value="*Cc1ccccc1OC">*Cc1ccccc1OC</option>
+                                
+                                    <option value="*N1C(=O)C=CC1=O">*N1C(=O)C=CC1=O</option>
+                                
+                                    <option value="*OS(N)(=O)=O">*OS(N)(=O)=O</option>
+                                
+                                    <option value="*CN1C(=O)c2ccccc2C1=O">*CN1C(=O)c2ccccc2C1=O</option>
+                                
+                                    <option value="*N1C(=O)c2ccccc2C1=O">*N1C(=O)c2ccccc2C1=O</option>
+                                
+                                    <option value="*c1ccnc(N)n1">*c1ccnc(N)n1</option>
+                                
+                                    <option value="*c1nccn1C">*c1nccn1C</option>
+                                
+                                    <option value="*c1cnco1">*c1cnco1</option>
+                                
+                                    <option value="*OCc1cccnc1">*OCc1cccnc1</option>
+                                
+                                    <option value="*OCc1ccccn1">*OCc1ccccn1</option>
+                                
+                                    <option value="*OCc1ccncc1">*OCc1ccncc1</option>
+                                
+                                    <option value="*Oc1cccnc1">*Oc1cccnc1</option>
+                                
+                                    <option value="*CS">*CS</option>
+                                
+                                    <option value="*OCC1CC1">*OCC1CC1</option>
+                                
+                                    <option value="*OCC(C)C">*OCC(C)C</option>
+                                
+                                    <option value="*NC(=O)OCC">*NC(=O)OCC</option>
+                                
+                                    <option value="*OCCN(CC)CC">*OCCN(CC)CC</option>
+                                
+                                    <option value="*NC(=O)C=C">*NC(=O)C=C</option>
+                                
+                                    <option value="*Cc1ccc(C)cc1">*Cc1ccc(C)cc1</option>
+                                
+                                    <option value="*OC1CCN(C)CC1">*OC1CCN(C)CC1</option>
+                                
+                                    <option value="*S(=O)(=O)N1CCOCC1">*S(=O)(=O)N1CCOCC1</option>
+                                
+                                    <option value="*Cc1c[nH]cn1">*Cc1c[nH]cn1</option>
+                                
+                                    <option value="*CF">*CF</option>
+                                
+                                    <option value="*CNC(=O)c1ccccc1">*CNC(=O)c1ccccc1</option>
+                                
+                                    <option value="*Nc1cccnc1">*Nc1cccnc1</option>
+                                
+                                    <option value="*Nc1ccncc1">*Nc1ccncc1</option>
+                                
+                                    <option value="*c1ncc[nH]1">*c1ncc[nH]1</option>
+                                
+                                    <option value="*Oc1cccc(Cl)c1">*Oc1cccc(Cl)c1</option>
+                                
+                                    <option value="*NC(=O)NCC">*NC(=O)NCC</option>
+                                
+                                    <option value="*c1ccc(C(=O)OC)cc1">*c1ccc(C(=O)OC)cc1</option>
+                                
+                                    <option value="*c1cccc(C(N)=O)c1">*c1cccc(C(N)=O)c1</option>
+                                
+                                    <option value="*NC(P(=O)(O)O)P(=O)(O)O">*NC(P(=O)(O)O)P(=O)(O)O</option>
+                                
+                                    <option value="*n1cccc1">*n1cccc1</option>
+                                
+                                    <option value="*Cn1nc(OC)oc1=O">*Cn1nc(OC)oc1=O</option>
+                                
+                                    <option value="*c1cccc(N)c1">*c1cccc(N)c1</option>
+                                
+                                    <option value="*NCCN">*NCCN</option>
+                                
+                                    <option value="*c1ccc(C(F)(F)F)cn1">*c1ccc(C(F)(F)F)cn1</option>
+                                
+                                    <option value="*CCC(=O)NO">*CCC(=O)NO</option>
+                                
+                                    <option value="*OCCF">*OCCF</option>
+                                
+                                    <option value="*CCCCC(=O)NO">*CCCCC(=O)NO</option>
+                                
+                                    <option value="*c1nn[nH]n1">*c1nn[nH]n1</option>
+                                
+                                    <option value="*OCC#C">*OCC#C</option>
+                                
+                                    <option value="*CP(=O)(O)O">*CP(=O)(O)O</option>
+                                
+                                    <option value="*N1CCC(N(C)C)C1">*N1CCC(N(C)C)C1</option>
+                                
+                                    <option value="*c1ccn(C)n1">*c1ccn(C)n1</option>
+                                
+                                    <option value="*C1COC(N)=N1">*C1COC(N)=N1</option>
+                                
+                                    <option value="*c1ccc(N2CCOCC2)cc1">*c1ccc(N2CCOCC2)cc1</option>
+                                
+                                    <option value="*C1=NCCN1">*C1=NCCN1</option>
+                                
+                                    <option value="*CCNC(C)=O">*CCNC(C)=O</option>
+                                
+                                    <option value="*N(C)c1ccccc1">*N(C)c1ccccc1</option>
+                                
+                                    <option value="*N1CCC(N2CCCC2)CC1">*N1CCC(N2CCCC2)CC1</option>
+                                
+                                    <option value="*c1cccc(CN)c1">*c1cccc(CN)c1</option>
+                                
+                                    <option value="*c1nccc(C(F)(F)F)n1">*c1nccc(C(F)(F)F)n1</option>
+                                
+                                    <option value="*c1ccnc(C(F)(F)F)n1">*c1ccnc(C(F)(F)F)n1</option>
+                                
+                                    <option value="*Cc1cccc(OC)c1">*Cc1cccc(OC)c1</option>
+                                
+                                    <option value="*C(C)c1ccccc1">*C(C)c1ccccc1</option>
+                                
+                                    <option value="*OCC(F)(F)F">*OCC(F)(F)F</option>
+                                
+                                    <option value="*C1CC1N">*C1CC1N</option>
+                                
+                                    <option value="*c1cc(OC)cc(OC)c1">*c1cc(OC)cc(OC)c1</option>
+                                
+                                    <option value="*CN(C)Cc1ccccc1">*CN(C)Cc1ccccc1</option>
+                                
+                                    <option value="*CNc1ccccc1">*CNc1ccccc1</option>
+                                
+                                    <option value="*CN(C)c1ccccc1">*CN(C)c1ccccc1</option>
+                                
+                                    <option value="*Cc1ccc2ccccc2c1">*Cc1ccc2ccccc2c1</option>
+                                
+                                    <option value="*CNCCO">*CNCCO</option>
+                                
+                                    <option value="*C(=O)c1ccc(C)cc1">*C(=O)c1ccc(C)cc1</option>
+                                
+                                    <option value="*Cc1c(C)n[nH]c1C(=O)O">*Cc1c(C)n[nH]c1C(=O)O</option>
+                                
+                                    <option value="*CCl">*CCl</option>
+                                
+                                    <option value="*c1cncs1">*c1cncs1</option>
+                                
+                                    <option value="*c1ccc(C(C)C)cc1">*c1ccc(C(C)C)cc1</option>
+                                
+                                    <option value="*CC(N)C(=O)O">*CC(N)C(=O)O</option>
+                                
+                                    <option value="*Oc1ccc(O)cc1">*Oc1ccc(O)cc1</option>
+                                
+                                    <option value="*c1ccc(OC)c(F)c1">*c1ccc(OC)c(F)c1</option>
+                                
+                                    <option value="*C(C)=NNC(N)=S">*C(C)=NNC(N)=S</option>
+                                
+                                    <option value="*C(=O)c1ccco1">*C(=O)c1ccco1</option>
+                                
+                                    <option value="*C(O)c1ccccc1">*C(O)c1ccccc1</option>
+                                
+                                    <option value="*NCCCC">*NCCCC</option>
+                                
+                                    <option value="*N=[N+]=N">*N=[N+]=N</option>
+                                
+                                    <option value="*c1cc(O)cc(O)c1">*c1cc(O)cc(O)c1</option>
+                                
+                                    <option value="*N1CCCC(O)C1">*N1CCCC(O)C1</option>
+                                
+                                    <option value="*Cn1cncn1">*Cn1cncn1</option>
+                                
+                                    <option value="*Oc1ccc(Cl)cc1O">*Oc1ccc(Cl)cc1O</option>
+                                
+                                    <option value="*c1cnc(N)cn1">*c1cnc(N)cn1</option>
+                                
+                                    <option value="*NCc1cccs1">*NCc1cccs1</option>
+                                
+                                    <option value="*NCCN1CCOCC1">*NCCN1CCOCC1</option>
+                                
+                                    <option value="*c1ccnnc1">*c1ccnnc1</option>
+                                
+                                    <option value="*c1ccc(F)cn1">*c1ccc(F)cn1</option>
+                                
+                                    <option value="*c1cncc2ccccc12">*c1cncc2ccccc12</option>
+                                
+                                    <option value="*N1CCCC1=O">*N1CCCC1=O</option>
+                                
+                                    <option value="*N1CCC2CN(C)CC21">*N1CCC2CN(C)CC21</option>
+                                
+                                    <option value="*c1ccc(C)cn1">*c1ccc(C)cn1</option>
+                                
+                                    <option value="*Oc1cccc(C)c1">*Oc1cccc(C)c1</option>
+                                
+                                    <option value="*NCCN(C)C">*NCCN(C)C</option>
+                                
+                                    <option value="*NC(=S)Nc1ccccc1">*NC(=S)Nc1ccccc1</option>
+                                
+                                    <option value="*Cc1ccc(C(F)(F)F)cc1">*Cc1ccc(C(F)(F)F)cc1</option>
+                                
+                                    <option value="*c1ccc(OC(C)C)cc1">*c1ccc(OC(C)C)cc1</option>
+                                
+                                    <option value="*N1CCC(OC)CC1">*N1CCC(OC)CC1</option>
+                                
+                                    <option value="*Cc1ccc(Cl)c(Cl)c1">*Cc1ccc(Cl)c(Cl)c1</option>
+                                
+                                    <option value="*Nc1nccs1">*Nc1nccs1</option>
+                                
+                                    <option value="*c1cccc(NC(C)=O)c1">*c1cccc(NC(C)=O)c1</option>
+                                
+                                    <option value="*c1nnc(C)o1">*c1nnc(C)o1</option>
+                                
+                                    <option value="*c1nc(C)no1">*c1nc(C)no1</option>
+                                
+                                    <option value="*Cc1cccc(F)c1">*Cc1cccc(F)c1</option>
+                                
+                                    <option value="*OCC1CCNCC1">*OCC1CCNCC1</option>
+                                
+                                    <option value="*c1cc(C)ccn1">*c1cc(C)ccn1</option>
+                                
+                                    <option value="*c1ccc(OC)cc1OC">*c1ccc(OC)cc1OC</option>
+                                
+                                    <option value="*NN">*NN</option>
+                                
+                                    <option value="*c1cccc(S(C)(=O)=O)c1">*c1cccc(S(C)(=O)=O)c1</option>
+                                
+                                    <option value="*NC(=O)NC1CCCCC1">*NC(=O)NC1CCCCC1</option>
+                                
+                                    <option value="*NC(=O)c1cccs1">*NC(=O)c1cccs1</option>
+                                
+                                    <option value="*CCN1CCCC1C">*CCN1CCCC1C</option>
+                                
+                                    <option value="*C(O)=CC(=O)C(=O)O">*C(O)=CC(=O)C(=O)O</option>
+                                
+                                    <option value="*C(=O)c1ccncc1">*C(=O)c1ccncc1</option>
+                                
+                                    <option value="*CC(F)(F)F">*CC(F)(F)F</option>
+                                
+                                    <option value="*N=C=S">*N=C=S</option>
+                                
+                                    <option value="*P(=O)(O)O">*P(=O)(O)O</option>
+                                
+                                    <option value="*C(=O)C=C(O)C(=O)O">*C(=O)C=C(O)C(=O)O</option>
+                                
+                                    <option value="*c1cncc(F)c1">*c1cncc(F)c1</option>
+                                
+                                    <option value="*N1CCC(N(C)C)CC1">*N1CCC(N(C)C)CC1</option>
+                                
+                                    <option value="*N1CCN(c2ccccn2)CC1">*N1CCN(c2ccccn2)CC1</option>
+                                
+                                    <option value="*N1CCN(c2ncccn2)CC1">*N1CCN(c2ncccn2)CC1</option>
+                                
+                                    <option value="*c1noc(C)n1">*c1noc(C)n1</option>
+                                
+                            </select>
+                        </div>
+                        <div class="col-2 pb-2">
+                            <button type="button" class="btn btn-primary btn-block" onclick="neighbourhoodHighlight({nodes: []});">Reset Selection</button>
+                        </div>
+                    </div>
+                </div>
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+                  new TomSelect("#select-node",{
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      }
+                  });
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "font": {"color": "white"}, "id": "*O", "label": "*O", "shape": "dot", "title": "*O*Cc1c[nH]cn1 substituted by*C(O)=CC(=O)C(=O)O substituted by*N substituted by*OC(C)=O substituted by*CC(N)C(=O)O substituted by*N1C(=O)c2ccccc2C1=O substituted by*Cc1c(C)n[nH]c1C(=O)O substituted by*OC substituted by*NS(N)(=O)=O substituted by*C=C1SC(=S)NC1=O substituted by*NN substituted by*P(=O)(O)O substituted by*NS(=O)(=O)c1ccccc1 substituted by*OCC1CCNCC1 substituted by*N=[N+]=N substituted by*C(=O)Nc1cccnc1 substituted by*CCNC(C)=O substituted by*C(C)=NNC(N)=S substituted by*C(=O)NO substituted by*CCl substituted by*Cn1nc(OC)oc1=O substituted by*Cn1ccnc1 substituted by*CO substituted by*OS(N)(=O)=O substituted by*N1CCC2CN(C)CC21 substituted by*C1COC(N)=N1 substituted by*S", "value": 27}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC", "label": "*OC", "shape": "dot", "title": "*OC*O substituted by*Oc1cccnc1 substituted by*S(C)(=O)=O substituted by*OCCCC substituted by*OC1CCCC1 substituted by*OCCO substituted by*OCC=C substituted by*OCc1ccccn1 substituted by*OCCN1CCOCC1 substituted by*OCCc1ccccc1 substituted by*n1cccc1 substituted by*CN(C)C substituted by*OCCN1CCCC1 substituted by*N(C)C substituted by*OCCCN(C)C substituted by*OC1CCNCC1 substituted by*OC(C)C substituted by*OCCOC substituted by*OCC#C substituted by*OCC(=O)O substituted by*OCCF substituted by*OCC(C)C substituted by*S(=O)(=O)N1CCOCC1 substituted by*C(=N)N substituted by*OCCC substituted by*OCCN(C)C substituted by*C=CC(=O)NO substituted by*OC(C)(C)C substituted by*S(N)(=O)=O substituted by*OCCCN1CCOCC1 substituted by*OCC1CCCO1 substituted by*NS(C)(=O)=O substituted by*OCCCN1CCCCC1 substituted by*CP(=O)(O)O substituted by*OCCN substituted by*OCc1ccccc1 substituted by*NC(=O)C=C substituted by*OCC(F)(F)F substituted by*OCCN(CC)CC substituted by*OC(F)F substituted by*Cl substituted by*OCC substituted by*OCCN1CCCCC1 substituted by*Oc1ccccc1 substituted by*OCC1CC1 substituted by*OC1CCN(C)CC1 substituted by*CNC(=O)c1ccccc1 substituted by*SC substituted by*CN(C)Cc1ccccc1 substituted by*c1cnco1", "value": 50}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N", "label": "*N", "shape": "dot", "title": "*N*O substituted by*NC substituted by*NCc1cccs1 substituted by*CN substituted by*NC(=O)c1cccs1 substituted by*Nc1nccs1 substituted by*NC(=O)NC1CCCCC1 substituted by*NC(C)C substituted by*NCc1ccccc1 substituted by*NC(=O)C1CCCCC1 substituted by*NC(=O)NCC substituted by*NC(=O)OC(C)(C)C substituted by*NC(=S)Nc1ccccc1 substituted by*Nc1ccccc1 substituted by*NC(=O)c1ccco1 substituted by*NCCN substituted by*c1cc(O)cc(O)c1 substituted by*Nc1ccccn1 substituted by*Nc1cccnc1 substituted by*CS substituted by*NC(=O)OCC substituted by*NC(=O)c1ccccc1 substituted by*NCCC substituted by*NC(N)=O substituted by*NCCCC substituted by*NC(C)=O substituted by*NCCO", "value": 27}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CO", "label": "*CO", "shape": "dot", "title": "*CO*O substituted by*CNC(C)=O substituted by*COCc1ccccc1 substituted by*CNCCO substituted by*C(C)O substituted by*C(C)(C)O", "value": 6}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC(C)=O", "label": "*OC(C)=O", "shape": "dot", "title": "*OC(C)=O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NO", "label": "*C(=O)NO", "shape": "dot", "title": "*C(=O)NO*O substituted by*CC(=O)NO", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cl", "label": "*Cl", "shape": "dot", "title": "*Cl*C=O substituted by*I substituted by*[N+](=O)[O-] substituted by*OC substituted by*C#N substituted by*C=C1SC(=O)NC1=O substituted by*C#Cc1ccccc1 substituted by*Cn1cncn1 substituted by*N=C=S substituted by*C(=O)O substituted by*c1c(C)noc1C substituted by*C(F)(F)F substituted by*C(C)=O substituted by*Br substituted by*C#C substituted by*C(C)(C)C substituted by*n1cccn1 substituted by*C1=NCCN1 substituted by*n1ccnc1 substituted by*N1C(=O)C=CC1=O substituted by*C(=O)C=C(O)C(=O)O substituted by*C1CC1N substituted by*c1cnc(N)cn1 substituted by*OC(F)(F)F substituted by*NC(P(=O)(O)O)P(=O)(O)O substituted by*F substituted by*C#Cc1ccccn1", "value": 27}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC", "label": "*OCC", "shape": "dot", "title": "*OCC*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N(C)C", "label": "*N(C)C", "shape": "dot", "title": "*N(C)C*OC substituted by*NCCOC substituted by*N(CC)CC", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(C)(=O)=O", "label": "*S(C)(=O)=O", "shape": "dot", "title": "*S(C)(=O)=O*OC substituted by*S(=O)(=O)CC substituted by*S(=O)(=O)N(C)C substituted by*CS(C)(=O)=O", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC", "label": "*NC", "shape": "dot", "title": "*NC*NC1CC1 substituted by*NCC substituted by*N", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(C)=O", "label": "*NC(C)=O", "shape": "dot", "title": "*NC(C)=O*NC(=O)CC substituted by*NC(=O)CCC substituted by*N substituted by*NC(=O)C1CC1 substituted by*N1CCCC1=O substituted by*NC(=O)C(C)C", "value": 6}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN", "label": "*CN", "shape": "dot", "title": "*CN*C(C)N substituted by*CCN substituted by*N substituted by*C1CCCN1", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCc1ccccc1", "label": "*NCc1ccccc1", "shape": "dot", "title": "*NCc1ccccc1*N substituted by*NCc1ccc(OC)cc1 substituted by*NCCc1ccccc1 substituted by*N(C)Cc1ccccc1 substituted by*NC1CCCCC1", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*F", "label": "*F", "shape": "dot", "title": "*F*Cl substituted by*B1OC(C)(C)C(C)(C)O1 substituted by*SC(F)(F)F substituted by*Oc1ccc(Cl)cc1O substituted by*CCN1CCCC1C substituted by*B(O)O substituted by*C(F)(F)P(=O)(O)O", "value": 7}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Br", "label": "*Br", "shape": "dot", "title": "*Br*CNC1CC1c1ccccc1 substituted by*Cl", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(F)(F)F", "label": "*C(F)(F)F", "shape": "dot", "title": "*C(F)(F)F*C(F)F substituted by*c1nc2cc(C(N)=O)ccc2[nH]1 substituted by*Cl substituted by*Nc1ccccc1C(N)=O", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C#N", "label": "*C#N", "shape": "dot", "title": "*C#N*C(N)=O substituted by*C=NO substituted by*Cl", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*B(O)O", "label": "*B(O)O", "shape": "dot", "title": "*B(O)O*F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*SC(F)(F)F", "label": "*SC(F)(F)F", "shape": "dot", "title": "*SC(F)(F)F*F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*B1OC(C)(C)C(C)(C)O1", "label": "*B1OC(C)(C)C(C)(C)O1", "shape": "dot", "title": "*B1OC(C)(C)C(C)(C)O1*F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(F)(F)P(=O)(O)O", "label": "*C(F)(F)P(=O)(O)O", "shape": "dot", "title": "*C(F)(F)P(=O)(O)O*F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC", "label": "*CC", "shape": "dot", "title": "*CC*CCN(C)C substituted by*CC(F)(F)F substituted by*C=C substituted by*CC#N substituted by*C(C)C substituted by*CCO substituted by*COC substituted by*CCOC substituted by*CCCC substituted by*CC1CC1 substituted by*C1CC1 substituted by*CC=C substituted by*CCC substituted by*CF", "value": 14}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)C", "label": "*C(C)C", "shape": "dot", "title": "*C(C)C*C(C)CC substituted by*CC(C)C substituted by*C1CCCCC1 substituted by*CC", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCC", "label": "*CCC", "shape": "dot", "title": "*CCC*CCCCC substituted by*CC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CC1", "label": "*C1CC1", "shape": "dot", "title": "*C1CC1*C1CCCO1 substituted by*C1CCC1 substituted by*CC", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCC", "label": "*CCCC", "shape": "dot", "title": "*CCCC*CCCCCC substituted by*CCC(C)C substituted by*CCCCCCCC substituted by*CC", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=C", "label": "*C=C", "shape": "dot", "title": "*C=C*CC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(N)=O", "label": "*C(N)=O", "shape": "dot", "title": "*C(N)=O*C(=O)NC1CC1 substituted by*C(=O)NC substituted by*C#N", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=NO", "label": "*C=NO", "shape": "dot", "title": "*C=NO*C#N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)O", "label": "*C(=O)O", "shape": "dot", "title": "*C(=O)O*C(=O)OC substituted by*CC(=O)O substituted by*Cl substituted by*c1nnn[nH]1 substituted by*C(=O)NN substituted by*c1nn[nH]n1 substituted by*CNC1CCCC1 substituted by*C(=O)NCCOC substituted by*C(=O)OCC substituted by*C(=O)NCCO", "value": 10}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)OC", "label": "*C(=O)OC", "shape": "dot", "title": "*C(=O)OC*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(=O)O", "label": "*CC(=O)O", "shape": "dot", "title": "*CC(=O)O*C(=O)O substituted by*CC(=O)OC substituted by*CC(N)=O substituted by*CCC(=O)O substituted by*C(C)C(=O)O", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)OCC", "label": "*C(=O)OCC", "shape": "dot", "title": "*C(=O)OCC*C(=O)O substituted by*C(=O)OCc1ccccc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nnn[nH]1", "label": "*c1nnn[nH]1", "shape": "dot", "title": "*c1nnn[nH]1*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNC1CC1c1ccccc1", "label": "*CNC1CC1c1ccccc1", "shape": "dot", "title": "*CNC1CC1c1ccccc1*Br", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(F)F", "label": "*C(F)F", "shape": "dot", "title": "*C(F)F*C(F)(F)F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nc2cc(C(N)=O)ccc2[nH]1", "label": "*c1nc2cc(C(N)=O)ccc2[nH]1", "shape": "dot", "title": "*c1nc2cc(C(N)=O)ccc2[nH]1*C(F)(F)F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccccc1C(N)=O", "label": "*Nc1ccccc1C(N)=O", "shape": "dot", "title": "*Nc1ccccc1C(N)=O*C(F)(F)F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCCCC1", "label": "*C1CCCCC1", "shape": "dot", "title": "*C1CCCCC1*C1CCOCC1 substituted by*C1CCCC1 substituted by*C12CC3CC(CC(C3)C1)C2 substituted by*C(C)C", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(C)C", "label": "*CC(C)C", "shape": "dot", "title": "*CC(C)C*C(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)CC", "label": "*C(C)CC", "shape": "dot", "title": "*C(C)CC*C(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccccc1", "label": "*Cc1ccccc1", "shape": "dot", "title": "*Cc1ccccc1*CC1CCCCC1 substituted by*Cc1ccccn1 substituted by*Cc1cccs1 substituted by*Cc1cccc(OC)c1 substituted by*C(O)c1ccccc1 substituted by*CCc1ccccc1 substituted by*COc1ccccc1 substituted by*Cc1cccc(F)c1 substituted by*Cc1ccc(OC)cc1 substituted by*Cc1ccncc1 substituted by*Cc1ccc(F)cc1 substituted by*Cc1ccc(Cl)cc1 substituted by*Cc1ccccc1Cl substituted by*C(=O)c1ccccc1 substituted by*Cc1ccc2ccccc2c1 substituted by*Cc1ccccc1OC substituted by*Cc1ccc(C)cc1 substituted by*C(C)c1ccccc1 substituted by*Cc1ccc(C(F)(F)F)cc1 substituted by*Cc1cccnc1 substituted by*Cc1cccc(Cl)c1 substituted by*Cc1ccc(Cl)c(Cl)c1", "value": 22}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCc1ccccc1", "label": "*CCc1ccccc1", "shape": "dot", "title": "*CCc1ccccc1*CCCc1ccccc1 substituted by*CCOc1ccccc1 substituted by*Cc1ccccc1 substituted by*C=Cc1ccccc1 substituted by*C1CC1c1ccccc1", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc(OC)cc1", "label": "*Cc1ccc(OC)cc1", "shape": "dot", "title": "*Cc1ccc(OC)cc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc(F)cc1", "label": "*Cc1ccc(F)cc1", "shape": "dot", "title": "*Cc1ccc(F)cc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc(Cl)cc1", "label": "*Cc1ccc(Cl)cc1", "shape": "dot", "title": "*Cc1ccc(Cl)cc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC1CCCCC1", "label": "*CC1CCCCC1", "shape": "dot", "title": "*CC1CCCCC1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccnc1", "label": "*c1cccnc1", "shape": "dot", "title": "*c1cccnc1*c1ccc2[nH]ccc2c1 substituted by*c1cccc(C(N)=O)c1 substituted by*c1ccnnc1 substituted by*c1ccn(C)n1 substituted by*c1ccncc1 substituted by*c1ccccn1 substituted by*c1cncc(OC)c1 substituted by*c1cccc(S(C)(=O)=O)c1 substituted by*c1ccc(N)nc1 substituted by*c1ccc(OC)nc1 substituted by*c1cncnc1 substituted by*c1cccc(N)c1 substituted by*c1cc[nH]n1 substituted by*c1cnn(C)c1 substituted by*c1cncs1 substituted by*c1cccc(NC(C)=O)c1 substituted by*c1cncc(F)c1 substituted by*c1cncc2ccccc12 substituted by*c1cccc(CN)c1 substituted by*c1ccc(C)nc1 substituted by*c1cnc2ccccc2c1 substituted by*c1ccc(Cl)nc1", "value": 22}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccncc1", "label": "*c1ccncc1", "shape": "dot", "title": "*c1ccncc1*c1ccnc(C)c1 substituted by*c1ccnc(N)n1 substituted by*c1cccnc1OC substituted by*c1cccnc1 substituted by*c1ccc(C(N)=O)cc1 substituted by*c1ccnc(OC)c1 substituted by*c1ccncn1", "value": 7}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccn1", "label": "*c1ccccn1", "shape": "dot", "title": "*c1ccccn1*c1ncccn1 substituted by*c1cccc(OC)n1 substituted by*c1ccc2ccccc2n1 substituted by*c1cnccn1 substituted by*c1cccnc1 substituted by*c1csc(C)n1 substituted by*c1ccc(C)cn1 substituted by*c1cc(C)ccn1 substituted by*c1ncc[nH]1 substituted by*c1ncccc1C substituted by*c1nccn1C substituted by*c1cccc(C)n1 substituted by*c1nccs1 substituted by*c1ccc(F)cn1", "value": 14}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cncnc1", "label": "*c1cncnc1", "shape": "dot", "title": "*c1cncnc1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cnn(C)c1", "label": "*c1cnn(C)c1", "shape": "dot", "title": "*c1cnn(C)c1*c1ccnn1C substituted by*c1cn[nH]c1 substituted by*c1cccnc1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC)nc1", "label": "*c1ccc(OC)nc1", "shape": "dot", "title": "*c1ccc(OC)nc1*c1cccnc1 substituted by*c1ccc(OC(C)C)nc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccnc(C)c1", "label": "*c1ccnc(C)c1", "shape": "dot", "title": "*c1ccnc(C)c1*c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccncn1", "label": "*c1ccncn1", "shape": "dot", "title": "*c1ccncn1*c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(N)=O)cc1", "label": "*c1ccc(C(N)=O)cc1", "shape": "dot", "title": "*c1ccc(C(N)=O)cc1*c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccnc(OC)c1", "label": "*c1ccnc(OC)c1", "shape": "dot", "title": "*c1ccnc(OC)c1*c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCCC", "label": "*CCCCC", "shape": "dot", "title": "*CCCCC*CCC substituted by*CCCCCCC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N(CC)CC", "label": "*N(CC)CC", "shape": "dot", "title": "*N(CC)CC*N(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCOC", "label": "*NCCOC", "shape": "dot", "title": "*NCCOC*N(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NC", "label": "*C(=O)NC", "shape": "dot", "title": "*C(=O)NC*C(=O)NC(C)C substituted by*C(N)=O substituted by*C(=O)NCC substituted by*C(=O)N(C)C", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NC1CC1", "label": "*C(=O)NC1CC1", "shape": "dot", "title": "*C(=O)NC1CC1*C(N)=O substituted by*C(=O)NCC1CC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)O", "label": "*C(C)O", "shape": "dot", "title": "*C(C)O*CO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)(C)O", "label": "*C(C)(C)O", "shape": "dot", "title": "*C(C)(C)O*CO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNC(C)=O", "label": "*CNC(C)=O", "shape": "dot", "title": "*CNC(C)=O*CO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*COCc1ccccc1", "label": "*COCc1ccccc1", "shape": "dot", "title": "*COCc1ccccc1*CO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCOCC1", "label": "*N1CCOCC1", "shape": "dot", "title": "*N1CCOCC1*N1CCCC(O)C1 substituted by*N1CCC(OC)CC1 substituted by*NCCN1CCOCC1 substituted by*N1CCN(C)CC1 substituted by*N1CCC(O)CC1 substituted by*N1CCC(O)C1 substituted by*N1CCCCC1 substituted by*N1CCS(=O)(=O)CC1 substituted by*N1CCN(c2ccccc2)CC1 substituted by*NCCN(C)C substituted by*N1CCN(C(C)=O)CC1", "value": 11}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCCCC1", "label": "*N1CCCCC1", "shape": "dot", "title": "*N1CCCCC1*N1CCOCC1 substituted by*N1CCC(CO)CC1 substituted by*N1CCCC1 substituted by*N1CCC(C)CC1", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(C)CC1", "label": "*N1CCN(C)CC1", "shape": "dot", "title": "*N1CCN(C)CC1*N1CCCN(C)CC1 substituted by*N1CCC(N(C)C)CC1 substituted by*N1CCNCC1 substituted by*N1CCC(N(C)C)C1 substituted by*N1CCN(CCO)CC1 substituted by*N1CCC(N2CCCC2)CC1 substituted by*N1CCN(CC)CC1 substituted by*N1CCOCC1", "value": 8}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(O)CC1", "label": "*N1CCC(O)CC1", "shape": "dot", "title": "*N1CCC(O)CC1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(C(C)=O)CC1", "label": "*N1CCN(C(C)=O)CC1", "shape": "dot", "title": "*N1CCN(C(C)=O)CC1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCS(=O)(=O)CC1", "label": "*N1CCS(=O)(=O)CC1", "shape": "dot", "title": "*N1CCS(=O)(=O)CC1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*[N+](=O)[O-]", "label": "*[N+](=O)[O-]", "shape": "dot", "title": "*[N+](=O)[O-]*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)(C)C", "label": "*C(C)(C)C", "shape": "dot", "title": "*C(C)(C)C*C(C)(C)CO substituted by*Cl", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)(C)CO", "label": "*C(C)(C)CO", "shape": "dot", "title": "*C(C)(C)CO*C(C)(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC)cc1", "label": "*c1ccc(OC)cc1", "shape": "dot", "title": "*c1ccc(OC)cc1*c1ccc(OC)c(F)c1 substituted by*c1ccc(F)cc1 substituted by*c1ccc(C#N)cc1 substituted by*c1ccc([N+](=O)[O-])cc1 substituted by*c1cc(OC)cc(OC)c1 substituted by*c1ccc(O)cc1 substituted by*c1cccc(OC)c1 substituted by*c1ccc(OC)cc1OC substituted by*c1ccc(C(F)(F)F)cc1 substituted by*c1ccc(NC(C)=O)cc1 substituted by*c1ccccc1OC substituted by*c1ccc(C(C)C)cc1 substituted by*c1ccc(OC)c(OC)c1 substituted by*c1ccc(N)cc1 substituted by*c1ccc2c(c1)OCO2 substituted by*c1ccc(OC(C)C)cc1 substituted by*c1ccc(OCC)cc1 substituted by*c1ccc(N(C)C)cc1 substituted by*c1ccc(C(=O)OC)cc1 substituted by*c1ccc(S(C)(=O)=O)cc1 substituted by*c1ccc(C(C)=O)cc1 substituted by*c1ccc(N2CCOCC2)cc1 substituted by*c1ccc(CC)cc1", "value": 23}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(F)cc1", "label": "*c1ccc(F)cc1", "shape": "dot", "title": "*c1ccc(F)cc1*c1ccccc1F substituted by*c1ccc(OC)cc1 substituted by*c1ccc(Cl)cc1 substituted by*c1cccc(F)c1 substituted by*c1ccc(F)c(F)c1 substituted by*c1ccc(S(N)(=O)=O)cc1 substituted by*c1ccc(F)cc1F", "value": 7}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(OC)c1", "label": "*c1cccc(OC)c1", "shape": "dot", "title": "*c1cccc(OC)c1*c1cccc(CO)c1 substituted by*c1ccc(OC)cc1 substituted by*c1ccccc1C#N substituted by*c1cccc(C#N)c1", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1OC", "label": "*c1ccccc1OC", "shape": "dot", "title": "*c1ccccc1OC*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(F)(F)F)cc1", "label": "*c1ccc(C(F)(F)F)cc1", "shape": "dot", "title": "*c1ccc(C(F)(F)F)cc1*c1ccc(C(F)(F)F)cn1 substituted by*c1ccc(OC)cc1 substituted by*c1ccc(OC(F)(F)F)cc1 substituted by*c1ccc(C(F)(F)F)nc1 substituted by*c1ccc(C(C)(C)C)cc1 substituted by*c1cccc(C(F)(F)F)c1", "value": 6}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C#N)cc1", "label": "*c1ccc(C#N)cc1", "shape": "dot", "title": "*c1ccc(C#N)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(Cl)cc1", "label": "*c1ccc(Cl)cc1", "shape": "dot", "title": "*c1ccc(Cl)cc1*c1ccc(C)cc1 substituted by*c1ccccc1Cl substituted by*c1cccc(Cl)c1 substituted by*c1ccc(Br)cc1 substituted by*c1ccc(F)cc1 substituted by*c1cccc([N+](=O)[O-])c1 substituted by*c1cccc(Br)c1 substituted by*c1ccc(Cl)c(Cl)c1 substituted by*c1ccc(Cl)cc1Cl", "value": 9}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(F)c1", "label": "*c1cccc(F)c1", "shape": "dot", "title": "*c1cccc(F)c1*c1cc(F)cc(F)c1 substituted by*c1ccc(F)cc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1F", "label": "*c1ccccc1F", "shape": "dot", "title": "*c1ccccc1F*c1ccc(F)cc1 substituted by*c1c(F)cccc1F", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(F)c(F)c1", "label": "*c1ccc(F)c(F)c1", "shape": "dot", "title": "*c1ccc(F)c(F)c1*c1ccc(F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCCC1", "label": "*C1CCCC1", "shape": "dot", "title": "*C1CCCC1*C1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCOCC1", "label": "*C1CCOCC1", "shape": "dot", "title": "*C1CCOCC1*C1CCN(C(C)=O)CC1 substituted by*C1CCOC1 substituted by*C1CCCCC1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C12CC3CC(CC(C3)C1)C2", "label": "*C12CC3CC(CC(C3)C1)C2", "shape": "dot", "title": "*C12CC3CC(CC(C3)C1)C2*C1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCC(=O)O", "label": "*CCC(=O)O", "shape": "dot", "title": "*CCC(=O)O*C=CC(=O)O substituted by*CC(=O)O substituted by*CCCC(=O)O", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(N)=O", "label": "*CC(N)=O", "shape": "dot", "title": "*CC(N)=O*CC(=O)NC substituted by*CC(=O)O", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(=O)OC", "label": "*CC(=O)OC", "shape": "dot", "title": "*CC(=O)OC*CC(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)C(=O)O", "label": "*C(C)C(=O)O", "shape": "dot", "title": "*C(C)C(=O)O*CC(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cnccn1", "label": "*c1cnccn1", "shape": "dot", "title": "*c1cnccn1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nccs1", "label": "*c1nccs1", "shape": "dot", "title": "*c1nccs1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ncccn1", "label": "*c1ncccn1", "shape": "dot", "title": "*c1ncccn1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C)n1", "label": "*c1cccc(C)n1", "shape": "dot", "title": "*c1cccc(C)n1*c1ccccn1 substituted by*c1cccc(C(F)(F)F)n1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCCCC", "label": "*CCCCCC", "shape": "dot", "title": "*CCCCCC*CCCC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCC(C)C", "label": "*CCC(C)C", "shape": "dot", "title": "*CCC(C)C*CCCC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCCCCCC", "label": "*CCCCCCCC", "shape": "dot", "title": "*CCCCCCCC*CCCC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)CC", "label": "*NC(=O)CC", "shape": "dot", "title": "*NC(=O)CC*NC(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)C1CC1", "label": "*NC(=O)C1CC1", "shape": "dot", "title": "*NC(=O)C1CC1*NC(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)CCC", "label": "*NC(=O)CCC", "shape": "dot", "title": "*NC(=O)CCC*NC(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)C(C)C", "label": "*NC(=O)C(C)C", "shape": "dot", "title": "*NC(=O)C(C)C*NC(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCC", "label": "*NCC", "shape": "dot", "title": "*NCC*NC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC1CC1", "label": "*NC1CC1", "shape": "dot", "title": "*NC1CC1*NC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)=O", "label": "*C(C)=O", "shape": "dot", "title": "*C(C)=O*C(=O)OC(C)(C)C substituted by*C(=O)CC substituted by*Cl substituted by*C(=O)C(F)(F)F", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)CC", "label": "*C(=O)CC", "shape": "dot", "title": "*C(=O)CC*C(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)OC(C)(C)C", "label": "*C(=O)OC(C)(C)C", "shape": "dot", "title": "*C(=O)OC(C)(C)C*C(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)C(F)(F)F", "label": "*C(=O)C(F)(F)F", "shape": "dot", "title": "*C(=O)C(F)(F)F*C(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C)cc1", "label": "*c1ccc(C)cc1", "shape": "dot", "title": "*c1ccc(C)cc1*c1cccc(C)c1 substituted by*c1ccc(C)c(C)c1 substituted by*c1ccc(Cl)cc1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(Cl)c1", "label": "*c1cccc(Cl)c1", "shape": "dot", "title": "*c1cccc(Cl)c1*c1cc(Cl)cc(Cl)c1 substituted by*c1ccc(Cl)cc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1Cl", "label": "*c1ccccc1Cl", "shape": "dot", "title": "*c1ccccc1Cl*c1cccc(Cl)c1Cl substituted by*c1ccccc1C(F)(F)F substituted by*c1ccc(Cl)cc1 substituted by*c1ccccc1C", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(Br)cc1", "label": "*c1ccc(Br)cc1", "shape": "dot", "title": "*c1ccc(Br)cc1*c1ccc(Cl)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCNCC1", "label": "*N1CCNCC1", "shape": "dot", "title": "*N1CCNCC1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(CC)CC1", "label": "*N1CCN(CC)CC1", "shape": "dot", "title": "*N1CCN(CC)CC1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(CCO)CC1", "label": "*N1CCN(CCO)CC1", "shape": "dot", "title": "*N1CCN(CCO)CC1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCCN(C)CC1", "label": "*N1CCCN(C)CC1", "shape": "dot", "title": "*N1CCCN(C)CC1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCc1ccccc1", "label": "*OCc1ccccc1", "shape": "dot", "title": "*OCc1ccccc1*OC substituted by*SCc1ccccc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*SCc1ccccc1", "label": "*SCc1ccccc1", "shape": "dot", "title": "*SCc1ccccc1*OCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN", "label": "*CCN", "shape": "dot", "title": "*CCN*CCCN substituted by*CN", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCCN1", "label": "*C1CCCN1", "shape": "dot", "title": "*C1CCCN1*CN", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)N", "label": "*C(C)N", "shape": "dot", "title": "*C(C)N*CN", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCc1ccccc1", "label": "*CCCc1ccccc1", "shape": "dot", "title": "*CCCc1ccccc1*CCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=Cc1ccccc1", "label": "*C=Cc1ccccc1", "shape": "dot", "title": "*C=Cc1ccccc1*CCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCOc1ccccc1", "label": "*CCOc1ccccc1", "shape": "dot", "title": "*CCOc1ccccc1*CCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CC1c1ccccc1", "label": "*C1CC1c1ccccc1", "shape": "dot", "title": "*C1CC1c1ccccc1*CCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCCC1", "label": "*N1CCCC1", "shape": "dot", "title": "*N1CCCC1*N1CCc2ccccc2C1 substituted by*N1CCC1 substituted by*N1CCCCC1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(C)CC1", "label": "*N1CCC(C)CC1", "shape": "dot", "title": "*N1CCC(C)CC1*N1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(CO)CC1", "label": "*N1CCC(CO)CC1", "shape": "dot", "title": "*N1CCC(CO)CC1*N1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccs1", "label": "*c1cccs1", "shape": "dot", "title": "*c1cccs1*c1ccco1 substituted by*c1ccsc1 substituted by*c1ccc(Cl)s1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccco1", "label": "*c1ccco1", "shape": "dot", "title": "*c1ccco1*c1cccs1 substituted by*c1ccoc1 substituted by*c1ccc[nH]1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccsc1", "label": "*c1ccsc1", "shape": "dot", "title": "*c1ccsc1*c1cccs1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(Cl)s1", "label": "*c1ccc(Cl)s1", "shape": "dot", "title": "*c1ccc(Cl)s1*c1cccs1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCC1", "label": "*C1CCC1", "shape": "dot", "title": "*C1CCC1*C1CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCCO1", "label": "*C1CCCO1", "shape": "dot", "title": "*C1CCCO1*C1CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C)c1", "label": "*c1cccc(C)c1", "shape": "dot", "title": "*c1cccc(C)c1*c1ccc(C)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C)c(C)c1", "label": "*c1ccc(C)c(C)c1", "shape": "dot", "title": "*c1ccc(C)c(C)c1*c1ccc(C)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1ccccc1", "label": "*Oc1ccccc1", "shape": "dot", "title": "*Oc1ccccc1*Oc1ccc(F)cc1 substituted by*Oc1ccc(Cl)cc1 substituted by*Oc1cccc(C)c1 substituted by*Oc1ccc(OC)cc1 substituted by*Sc1ccccc1 substituted by*Oc1ccc(O)cc1 substituted by*OC", "value": 7}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Sc1ccccc1", "label": "*Sc1ccccc1", "shape": "dot", "title": "*Sc1ccccc1*Oc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1ccc(F)cc1", "label": "*Oc1ccc(F)cc1", "shape": "dot", "title": "*Oc1ccc(F)cc1*Oc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1ccc(Cl)cc1", "label": "*Oc1ccc(Cl)cc1", "shape": "dot", "title": "*Oc1ccc(Cl)cc1*Oc1ccccc1 substituted by*Oc1cccc(Cl)c1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1ccc(OC)cc1", "label": "*Oc1ccc(OC)cc1", "shape": "dot", "title": "*Oc1ccc(OC)cc1*Oc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(O)cc1", "label": "*c1ccc(O)cc1", "shape": "dot", "title": "*c1ccc(O)cc1*c1ccc(OC)cc1 substituted by*c1ccc(O)c(O)c1 substituted by*c1cccc(O)c1 substituted by*c1c[nH]c2ccccc12 substituted by*c1ccccc1O", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(O)c1", "label": "*c1cccc(O)c1", "shape": "dot", "title": "*c1cccc(O)c1*c1ccc(O)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1O", "label": "*c1ccccc1O", "shape": "dot", "title": "*c1ccccc1O*c1ccc(O)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1c[nH]c2ccccc12", "label": "*c1c[nH]c2ccccc12", "shape": "dot", "title": "*c1c[nH]c2ccccc12*c1ccc(O)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(O)c(O)c1", "label": "*c1ccc(O)c(O)c1", "shape": "dot", "title": "*c1ccc(O)c(O)c1*c1ccc(O)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccccc1", "label": "*Nc1ccccc1", "shape": "dot", "title": "*Nc1ccccc1*N substituted by*Nc1ccc(OC)cc1 substituted by*Nc1ccc(C)cc1 substituted by*N(C)c1ccccc1 substituted by*Nc1ccc(Cl)cc1 substituted by*Nc1ccc(F)cc1", "value": 6}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccc(OC)cc1", "label": "*Nc1ccc(OC)cc1", "shape": "dot", "title": "*Nc1ccc(OC)cc1*Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccc(F)cc1", "label": "*Nc1ccc(F)cc1", "shape": "dot", "title": "*Nc1ccc(F)cc1*Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccc(C)cc1", "label": "*Nc1ccc(C)cc1", "shape": "dot", "title": "*Nc1ccc(C)cc1*Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccc(Cl)cc1", "label": "*Nc1ccc(Cl)cc1", "shape": "dot", "title": "*Nc1ccc(Cl)cc1*Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(=O)(=O)CC", "label": "*S(=O)(=O)CC", "shape": "dot", "title": "*S(=O)(=O)CC*S(C)(=O)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(=O)(=O)N(C)C", "label": "*S(=O)(=O)N(C)C", "shape": "dot", "title": "*S(=O)(=O)N(C)C*S(C)(=O)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CS(C)(=O)=O", "label": "*CS(C)(=O)=O", "shape": "dot", "title": "*CS(C)(=O)=O*S(C)(=O)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC1", "label": "*N1CCC1", "shape": "dot", "title": "*N1CCC1*N1CCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCc2ccccc2C1", "label": "*N1CCc2ccccc2C1", "shape": "dot", "title": "*N1CCc2ccccc2C1*N1CCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C#N)c1", "label": "*c1cccc(C#N)c1", "shape": "dot", "title": "*c1cccc(C#N)c1*c1cccc(C(C)=O)c1 substituted by*c1cccc(OC)c1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1C#N", "label": "*c1ccccc1C#N", "shape": "dot", "title": "*c1ccccc1C#N*c1cccc(OC)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(CO)c1", "label": "*c1cccc(CO)c1", "shape": "dot", "title": "*c1cccc(CO)c1*c1ccc(CO)cc1 substituted by*c1cccc(OC)c1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN1CCOCC1", "label": "*CN1CCOCC1", "shape": "dot", "title": "*CN1CCOCC1*CN1CCCCC1 substituted by*CN1CCN(C)CC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN1CCCCC1", "label": "*CN1CCCCC1", "shape": "dot", "title": "*CN1CCCCC1*CN1CCOCC1 substituted by*CN1CCCC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN1CCN(C)CC1", "label": "*CN1CCN(C)CC1", "shape": "dot", "title": "*CN1CCN(C)CC1*CN1CCOCC1 substituted by*CN1CCNCC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*I", "label": "*I", "shape": "dot", "title": "*I*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)OCc1ccccc1", "label": "*C(=O)OCc1ccccc1", "shape": "dot", "title": "*C(=O)OCc1ccccc1*C(=O)OCC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(N)(=O)=O", "label": "*S(N)(=O)=O", "shape": "dot", "title": "*S(N)(=O)=O*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCc1ccccc1", "label": "*NCCc1ccccc1", "shape": "dot", "title": "*NCCc1ccccc1*NCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC1CCCCC1", "label": "*NC1CCCCC1", "shape": "dot", "title": "*NC1CCCCC1*NCc1ccccc1 substituted by*NC1CCCC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCc1ccc(OC)cc1", "label": "*NCc1ccc(OC)cc1", "shape": "dot", "title": "*NCc1ccc(OC)cc1*NCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N(C)Cc1ccccc1", "label": "*N(C)Cc1ccccc1", "shape": "dot", "title": "*N(C)Cc1ccccc1*NCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)N(C)C", "label": "*C(=O)N(C)C", "shape": "dot", "title": "*C(=O)N(C)C*C(=O)N1CCOCC1 substituted by*C(=O)NC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCC", "label": "*C(=O)NCC", "shape": "dot", "title": "*C(=O)NCC*C(=O)NC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NC(C)C", "label": "*C(=O)NC(C)C", "shape": "dot", "title": "*C(=O)NC(C)C*C(=O)NCCC substituted by*C(=O)NC(C)(C)C substituted by*C(=O)NC", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN(C)C", "label": "*CN(C)C", "shape": "dot", "title": "*CN(C)C*CNC substituted by*CNCC substituted by*CNC(C)C substituted by*OC substituted by*CNCc1ccccc1", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNC", "label": "*CNC", "shape": "dot", "title": "*CNC*CN(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNCC", "label": "*CNCC", "shape": "dot", "title": "*CNCC*CN(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNCc1ccccc1", "label": "*CNCc1ccccc1", "shape": "dot", "title": "*CNCc1ccccc1*CN(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNC(C)C", "label": "*CNC(C)C", "shape": "dot", "title": "*CNC(C)C*CN(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc(Cl)cc(Cl)c1", "label": "*c1cc(Cl)cc(Cl)c1", "shape": "dot", "title": "*c1cc(Cl)cc(Cl)c1*c1cccc(Cl)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)N1CCOCC1", "label": "*C(=O)N1CCOCC1", "shape": "dot", "title": "*C(=O)N1CCOCC1*C(=O)N(C)C substituted by*C(=O)N1CCCC1 substituted by*C(=O)N(CC)CC substituted by*C(=O)N1CCN(C)CC1 substituted by*C(=O)N1CCCCC1", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*SC", "label": "*SC", "shape": "dot", "title": "*SC*OC substituted by*SCC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*SCC", "label": "*SCC", "shape": "dot", "title": "*SCC*SC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccccc1", "label": "*C(=O)c1ccccc1", "shape": "dot", "title": "*C(=O)c1ccccc1*C(=O)c1cccs1 substituted by*C(=O)c1ccc(F)cc1 substituted by*S(=O)(=O)c1ccccc1 substituted by*C(=O)c1ccco1 substituted by*C(=O)c1ccncc1 substituted by*C(=O)c1ccc(Cl)cc1 substituted by*Cc1ccccc1 substituted by*C(=O)c1ccc(C)cc1 substituted by*C(=O)c1ccc(OC)cc1", "value": 9}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(=O)(=O)c1ccccc1", "label": "*S(=O)(=O)c1ccccc1", "shape": "dot", "title": "*S(=O)(=O)c1ccccc1*S(=O)(=O)c1ccc(Cl)cc1 substituted by*C(=O)c1ccccc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccc(F)cc1", "label": "*C(=O)c1ccc(F)cc1", "shape": "dot", "title": "*C(=O)c1ccc(F)cc1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccc(Cl)cc1", "label": "*C(=O)c1ccc(Cl)cc1", "shape": "dot", "title": "*C(=O)c1ccc(Cl)cc1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccc(OC)cc1", "label": "*C(=O)c1ccc(OC)cc1", "shape": "dot", "title": "*C(=O)c1ccc(OC)cc1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN1CCCC1", "label": "*CN1CCCC1", "shape": "dot", "title": "*CN1CCCC1*CN(CC)CC substituted by*CN1CCCCC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1C", "label": "*c1ccccc1C", "shape": "dot", "title": "*c1ccccc1C*c1ccccc1Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccccc1C(F)(F)F", "label": "*c1ccccc1C(F)(F)F", "shape": "dot", "title": "*c1ccccc1C(F)(F)F*c1ccccc1Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(Cl)c1Cl", "label": "*c1cccc(Cl)c1Cl", "shape": "dot", "title": "*c1cccc(Cl)c1Cl*c1ccccc1Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(=O)NO", "label": "*CC(=O)NO", "shape": "dot", "title": "*CC(=O)NO*C(=O)NO substituted by*CCC(=O)NO", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCO", "label": "*CCO", "shape": "dot", "title": "*CCO*CCCO substituted by*CC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCO", "label": "*CCCO", "shape": "dot", "title": "*CCCO*CCO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccoc1", "label": "*c1ccoc1", "shape": "dot", "title": "*c1ccoc1*c1ccco1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc[nH]1", "label": "*c1ccc[nH]1", "shape": "dot", "title": "*c1ccc[nH]1*c1ccco1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCN", "label": "*CCCN", "shape": "dot", "title": "*CCCN*CCN", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCC(=O)O", "label": "*CCCC(=O)O", "shape": "dot", "title": "*CCCC(=O)O*CCC(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=CC(=O)O", "label": "*C=CC(=O)O", "shape": "dot", "title": "*C=CC(=O)O*CCC(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc(F)cc(F)c1", "label": "*c1cc(F)cc(F)c1", "shape": "dot", "title": "*c1cc(F)cc(F)c1*c1cccc(F)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC(C)C", "label": "*OC(C)C", "shape": "dot", "title": "*OC(C)C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NS(C)(=O)=O", "label": "*NS(C)(=O)=O", "shape": "dot", "title": "*NS(C)(=O)=O*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCCCCC", "label": "*CCCCCCC", "shape": "dot", "title": "*CCCCCCC*CCCCC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1c(F)cccc1F", "label": "*c1c(F)cccc1F", "shape": "dot", "title": "*c1c(F)cccc1F*c1ccccc1F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)N1CCCCC1", "label": "*C(=O)N1CCCCC1", "shape": "dot", "title": "*C(=O)N1CCCCC1*C(=O)N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)N1CCN(C)CC1", "label": "*C(=O)N1CCN(C)CC1", "shape": "dot", "title": "*C(=O)N1CCN(C)CC1*C(=O)N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)N1CCCC1", "label": "*C(=O)N1CCCC1", "shape": "dot", "title": "*C(=O)N1CCCC1*C(=O)N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)N(CC)CC", "label": "*C(=O)N(CC)CC", "shape": "dot", "title": "*C(=O)N(CC)CC*C(=O)N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC(F)(F)F", "label": "*OC(F)(F)F", "shape": "dot", "title": "*OC(F)(F)F*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*COC", "label": "*COC", "shape": "dot", "title": "*COC*COCC substituted by*CC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*COCC", "label": "*COCC", "shape": "dot", "title": "*COCC*COC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC1CCCC1", "label": "*NC1CCCC1", "shape": "dot", "title": "*NC1CCCC1*NC1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=O", "label": "*C=O", "shape": "dot", "title": "*C=O*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)Nc1ccccc1", "label": "*C(=O)Nc1ccccc1", "shape": "dot", "title": "*C(=O)Nc1ccccc1*C(=O)NC1CCCCC1 substituted by*C(=O)NCc1ccccc1 substituted by*C(=O)Nc1ccc(F)cc1 substituted by*C(=O)Nc1ccc(Cl)cc1", "value": 4}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCc1ccccc1", "label": "*C(=O)NCc1ccccc1", "shape": "dot", "title": "*C(=O)NCc1ccccc1*C(=O)NCCc1ccccc1 substituted by*C(=O)Nc1ccccc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NC1CCCCC1", "label": "*C(=O)NC1CCCCC1", "shape": "dot", "title": "*C(=O)NC1CCCCC1*C(=O)NC1CCCC1 substituted by*C(=O)Nc1ccccc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)Nc1ccc(F)cc1", "label": "*C(=O)Nc1ccc(F)cc1", "shape": "dot", "title": "*C(=O)Nc1ccc(F)cc1*C(=O)Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)Nc1ccc(Cl)cc1", "label": "*C(=O)Nc1ccc(Cl)cc1", "shape": "dot", "title": "*C(=O)Nc1ccc(Cl)cc1*C(=O)Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCCC", "label": "*OCCCC", "shape": "dot", "title": "*OCCCC*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2ccccc2c1", "label": "*c1ccc2ccccc2c1", "shape": "dot", "title": "*c1ccc2ccccc2c1*c1ccc(-c2ccccc2)cc1 substituted by*c1cc2ccccc2s1 substituted by*c1csc2ccccc12 substituted by*c1ccc2ncccc2c1 substituted by*c1cccc2ccccc12", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc2ccccc12", "label": "*c1cccc2ccccc12", "shape": "dot", "title": "*c1cccc2ccccc12*c1ccc2ccccc2c1 substituted by*c1cccc2ncccc12 substituted by*c1cccc2cccnc12", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(-c2ccccc2)cc1", "label": "*c1ccc(-c2ccccc2)cc1", "shape": "dot", "title": "*c1ccc(-c2ccccc2)cc1*c1ccc2ccccc2c1 substituted by*c1cccc(-c2ccccc2)c1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc2ccccc2s1", "label": "*c1cc2ccccc2s1", "shape": "dot", "title": "*c1cc2ccccc2s1*c1cc2ccccc2o1 substituted by*c1ccc2ccccc2c1 substituted by*c1cc2ccccc2[nH]1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1csc2ccccc12", "label": "*c1csc2ccccc12", "shape": "dot", "title": "*c1csc2ccccc12*c1ccc2ccccc2c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2ncccc2c1", "label": "*c1ccc2ncccc2c1", "shape": "dot", "title": "*c1ccc2ncccc2c1*c1ccc2ccccc2c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc2cccnc12", "label": "*c1cccc2cccnc12", "shape": "dot", "title": "*c1cccc2cccnc12*c1cccc2ccccc12", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc2ncccc12", "label": "*c1cccc2ncccc12", "shape": "dot", "title": "*c1cccc2ncccc12*c1cccc2ccccc12", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C(C)=O)c1", "label": "*c1cccc(C(C)=O)c1", "shape": "dot", "title": "*c1cccc(C(C)=O)c1*c1cccc(C#N)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCC", "label": "*OCCC", "shape": "dot", "title": "*OCCC*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1ccccc1", "label": "*NC(=O)c1ccccc1", "shape": "dot", "title": "*NC(=O)c1ccccc1*N substituted by*NC(=O)c1cccnc1 substituted by*NC(=O)c1ccc(OC)cc1 substituted by*NC(=O)Nc1ccccc1 substituted by*NC(=O)Cc1ccccc1", "value": 5}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)Cc1ccccc1", "label": "*NC(=O)Cc1ccccc1", "shape": "dot", "title": "*NC(=O)Cc1ccccc1*NC(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1ccc(OC)cc1", "label": "*NC(=O)c1ccc(OC)cc1", "shape": "dot", "title": "*NC(=O)c1ccc(OC)cc1*NC(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)Nc1ccccc1", "label": "*NC(=O)Nc1ccccc1", "shape": "dot", "title": "*NC(=O)Nc1ccccc1*NC(=O)c1ccccc1 substituted by*NC(=O)Nc1ccc(Cl)cc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1cccnc1", "label": "*NC(=O)c1cccnc1", "shape": "dot", "title": "*NC(=O)c1cccnc1*NC(=O)c1ccccc1 substituted by*NC(=O)c1ccncc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cn[nH]c1", "label": "*c1cn[nH]c1", "shape": "dot", "title": "*c1cn[nH]c1*c1cnn(C)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccnn1C", "label": "*c1ccnn1C", "shape": "dot", "title": "*c1ccnn1C*c1cnn(C)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCCc1ccccc1", "label": "*C(=O)NCCc1ccccc1", "shape": "dot", "title": "*C(=O)NCCc1ccccc1*C(=O)NCc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*n1ccnc1", "label": "*n1ccnc1", "shape": "dot", "title": "*n1ccnc1*n1cncn1 substituted by*n1ccnc1C substituted by*Cl", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*n1cncn1", "label": "*n1cncn1", "shape": "dot", "title": "*n1cncn1*n1ccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*n1ccnc1C", "label": "*n1ccnc1C", "shape": "dot", "title": "*n1ccnc1C*n1ccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(C)C", "label": "*NC(C)C", "shape": "dot", "title": "*NC(C)C*NC(C)(C)C substituted by*NCC1CC1 substituted by*N", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(C)(C)C", "label": "*NC(C)(C)C", "shape": "dot", "title": "*NC(C)(C)C*NC(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCC1CC1", "label": "*NCC1CC1", "shape": "dot", "title": "*NCC1CC1*NC(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2c(c1)OCO2", "label": "*c1ccc2c(c1)OCO2", "shape": "dot", "title": "*c1ccc2c(c1)OCO2*c1ccc(OC)cc1 substituted by*c1ccc2c(c1)OCCO2", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2c(c1)OCCO2", "label": "*c1ccc2c(c1)OCCO2", "shape": "dot", "title": "*c1ccc2c(c1)OCCO2*c1ccc2c(c1)OCO2", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN(CC)CC", "label": "*CN(CC)CC", "shape": "dot", "title": "*CN(CC)CC*CN1CCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C#C", "label": "*C#C", "shape": "dot", "title": "*C#C*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC(C)C)nc1", "label": "*c1ccc(OC(C)C)nc1", "shape": "dot", "title": "*c1ccc(OC(C)C)nc1*c1ccc(OC)nc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCNCC1", "label": "*C1CCNCC1", "shape": "dot", "title": "*C1CCNCC1*C1=CCNCC1 substituted by*C1CCNC1 substituted by*C1CCN(C)CC1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCN(C)CC1", "label": "*C1CCN(C)CC1", "shape": "dot", "title": "*C1CCN(C)CC1*C1CCNCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCNC1", "label": "*C1CCNC1", "shape": "dot", "title": "*C1CCNC1*C1CCNCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1=CCNCC1", "label": "*C1=CCNCC1", "shape": "dot", "title": "*C1=CCNCC1*C1CCNCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN(C)C", "label": "*CCN(C)C", "shape": "dot", "title": "*CCN(C)C*CCCN(C)C substituted by*CCNC substituted by*CC", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCN(C)C", "label": "*CCCN(C)C", "shape": "dot", "title": "*CCCN(C)C*CCN(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCNC", "label": "*CCNC", "shape": "dot", "title": "*CCNC*CCN(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccncc1", "label": "*Cc1ccncc1", "shape": "dot", "title": "*Cc1ccncc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCOC", "label": "*OCCOC", "shape": "dot", "title": "*OCCOC*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCOC1", "label": "*C1CCOC1", "shape": "dot", "title": "*C1CCOC1*C1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CCN(C(C)=O)CC1", "label": "*C1CCN(C(C)=O)CC1", "shape": "dot", "title": "*C1CCN(C(C)=O)CC1*C1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cn1ccnc1", "label": "*Cn1ccnc1", "shape": "dot", "title": "*Cn1ccnc1*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(=O)O)cc1", "label": "*c1ccc(C(=O)O)cc1", "shape": "dot", "title": "*c1ccc(C(=O)O)cc1*c1cccc(C(=O)O)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C(=O)O)c1", "label": "*c1cccc(C(=O)O)c1", "shape": "dot", "title": "*c1cccc(C(=O)O)c1*c1ccc(C(=O)O)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC(=O)O", "label": "*OCC(=O)O", "shape": "dot", "title": "*OCC(=O)O*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCO", "label": "*OCCO", "shape": "dot", "title": "*OCCO*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCN(C)C", "label": "*OCCN(C)C", "shape": "dot", "title": "*OCCN(C)C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(N)cc1", "label": "*c1ccc(N)cc1", "shape": "dot", "title": "*c1ccc(N)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C(F)(F)F)c1", "label": "*c1cccc(C(F)(F)F)c1", "shape": "dot", "title": "*c1cccc(C(F)(F)F)c1*c1cccc(OC(F)(F)F)c1 substituted by*c1ccc(C(F)(F)F)cc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC(F)(F)F)cc1", "label": "*c1ccc(OC(F)(F)F)cc1", "shape": "dot", "title": "*c1ccc(OC(F)(F)F)cc1*c1ccc(C(F)(F)F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(C)(C)C)cc1", "label": "*c1ccc(C(C)(C)C)cc1", "shape": "dot", "title": "*c1ccc(C(C)(C)C)cc1*c1ccc(C(F)(F)F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(F)(F)F)nc1", "label": "*c1ccc(C(F)(F)F)nc1", "shape": "dot", "title": "*c1ccc(C(F)(F)F)nc1*c1ccc(C(F)(F)F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NC1CCCC1", "label": "*C(=O)NC1CCCC1", "shape": "dot", "title": "*C(=O)NC1CCCC1*C(=O)NC1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nc2ccccc2s1", "label": "*c1nc2ccccc2s1", "shape": "dot", "title": "*c1nc2ccccc2s1*c1nc2ccccc2[nH]1 substituted by*c1nc2ccccc2o1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nc2ccccc2o1", "label": "*c1nc2ccccc2o1", "shape": "dot", "title": "*c1nc2ccccc2o1*c1nc2ccccc2s1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nc2ccccc2[nH]1", "label": "*c1nc2ccccc2[nH]1", "shape": "dot", "title": "*c1nc2ccccc2[nH]1*c1nc2ccccc2s1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC1CC1", "label": "*CC1CC1", "shape": "dot", "title": "*CC1CC1*CC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(OC(F)(F)F)c1", "label": "*c1cccc(OC(F)(F)F)c1", "shape": "dot", "title": "*c1cccc(OC(F)(F)F)c1*c1cccc(C(F)(F)F)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCCC", "label": "*C(=O)NCCC", "shape": "dot", "title": "*C(=O)NCCC*C(=O)NC(C)C substituted by*C(=O)NCCCC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NC(C)(C)C", "label": "*C(=O)NC(C)(C)C", "shape": "dot", "title": "*C(=O)NC(C)(C)C*C(=O)NC(C)C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCO", "label": "*NCCO", "shape": "dot", "title": "*NCCO*NCCCO substituted by*N", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCCO", "label": "*NCCCO", "shape": "dot", "title": "*NCCCO*NCCO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCCO", "label": "*C(=O)NCCO", "shape": "dot", "title": "*C(=O)NCCO*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc2ccccc2o1", "label": "*c1cc2ccccc2o1", "shape": "dot", "title": "*c1cc2ccccc2o1*c1cc2ccccc2s1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc2ccccc2[nH]1", "label": "*c1cc2ccccc2[nH]1", "shape": "dot", "title": "*c1cc2ccccc2[nH]1*c1cc2ccccc2s1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN1CCNCC1", "label": "*CN1CCNCC1", "shape": "dot", "title": "*CN1CCNCC1*CN1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCN1CCOCC1", "label": "*OCCN1CCOCC1", "shape": "dot", "title": "*OCCN1CCOCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN1CCOCC1", "label": "*CCN1CCOCC1", "shape": "dot", "title": "*CCN1CCOCC1*CCN1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN1CCCCC1", "label": "*CCN1CCCCC1", "shape": "dot", "title": "*CCN1CCCCC1*CCN1CCCC1 substituted by*CCN1CCOCC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cnc2ccccc2c1", "label": "*c1cnc2ccccc2c1", "shape": "dot", "title": "*c1cnc2ccccc2c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCCN(C)C", "label": "*OCCCN(C)C", "shape": "dot", "title": "*OCCCN(C)C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1cccnc1", "label": "*Cc1cccnc1", "shape": "dot", "title": "*Cc1cccnc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=N)N", "label": "*C(=N)N", "shape": "dot", "title": "*C(=N)N*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccccn1", "label": "*Cc1ccccn1", "shape": "dot", "title": "*Cc1ccccn1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC#N", "label": "*CC#N", "shape": "dot", "title": "*CC#N*CC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(Cl)c(Cl)c1", "label": "*c1ccc(Cl)c(Cl)c1", "shape": "dot", "title": "*c1ccc(Cl)c(Cl)c1*c1ccc(Cl)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(N(C)C)cc1", "label": "*c1ccc(N(C)C)cc1", "shape": "dot", "title": "*c1ccc(N(C)C)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(=O)(=O)c1ccc(Cl)cc1", "label": "*S(=O)(=O)c1ccc(Cl)cc1", "shape": "dot", "title": "*S(=O)(=O)c1ccc(Cl)cc1*S(=O)(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S", "label": "*S", "shape": "dot", "title": "*S*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCN1CCCC1", "label": "*OCCN1CCCC1", "shape": "dot", "title": "*OCCN1CCCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCOC", "label": "*CCOC", "shape": "dot", "title": "*CCOC*CC1CCCO1 substituted by*CC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC1CCCO1", "label": "*CC1CCCO1", "shape": "dot", "title": "*CC1CCCO1*CCOC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC)c(OC)c1", "label": "*c1ccc(OC)c(OC)c1", "shape": "dot", "title": "*c1ccc(OC)c(OC)c1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc([N+](=O)[O-])cc1", "label": "*c1ccc([N+](=O)[O-])cc1", "shape": "dot", "title": "*c1ccc([N+](=O)[O-])cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc([N+](=O)[O-])c1", "label": "*c1cccc([N+](=O)[O-])c1", "shape": "dot", "title": "*c1cccc([N+](=O)[O-])c1*c1ccc(Cl)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C#Cc1ccccc1", "label": "*C#Cc1ccccc1", "shape": "dot", "title": "*C#Cc1ccccc1*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)Nc1cccnc1", "label": "*C(=O)Nc1cccnc1", "shape": "dot", "title": "*C(=O)Nc1cccnc1*O substituted by*C(=O)Nc1ccncc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)Nc1ccncc1", "label": "*C(=O)Nc1ccncc1", "shape": "dot", "title": "*C(=O)Nc1ccncc1*C(=O)Nc1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCN1CCCCC1", "label": "*OCCN1CCCCC1", "shape": "dot", "title": "*OCCN1CCCCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(S(N)(=O)=O)cc1", "label": "*c1ccc(S(N)(=O)=O)cc1", "shape": "dot", "title": "*c1ccc(S(N)(=O)=O)cc1*c1ccc(F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN1CCCC1", "label": "*CCN1CCCC1", "shape": "dot", "title": "*CCN1CCCC1*CCN1CCCCC1 substituted by*CCN(CC)CC", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN(CC)CC", "label": "*CCN(CC)CC", "shape": "dot", "title": "*CCN(CC)CC*CCN1CCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc[nH]n1", "label": "*c1cc[nH]n1", "shape": "dot", "title": "*c1cc[nH]n1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCCN1CCCCC1", "label": "*OCCCN1CCCCC1", "shape": "dot", "title": "*OCCCN1CCCCC1*OC substituted by*OCCCN1CCCC1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCCN1CCCC1", "label": "*OCCCN1CCCC1", "shape": "dot", "title": "*OCCCN1CCCC1*OCCCN1CCCCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(C)=O)cc1", "label": "*c1ccc(C(C)=O)cc1", "shape": "dot", "title": "*c1ccc(C(C)=O)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*n1cccn1", "label": "*n1cccn1", "shape": "dot", "title": "*n1cccn1*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NS(N)(=O)=O", "label": "*NS(N)(=O)=O", "shape": "dot", "title": "*NS(N)(=O)=O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NS(=O)(=O)c1ccccc1", "label": "*NS(=O)(=O)c1ccccc1", "shape": "dot", "title": "*NS(=O)(=O)c1ccccc1*O substituted by*NS(=O)(=O)c1ccc(C)cc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NS(=O)(=O)c1ccc(C)cc1", "label": "*NS(=O)(=O)c1ccc(C)cc1", "shape": "dot", "title": "*NS(=O)(=O)c1ccc(C)cc1*NS(=O)(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OCC)cc1", "label": "*c1ccc(OCC)cc1", "shape": "dot", "title": "*c1ccc(OCC)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=C1SC(=S)NC1=O", "label": "*C=C1SC(=S)NC1=O", "shape": "dot", "title": "*C=C1SC(=S)NC1=O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2[nH]ccc2c1", "label": "*c1ccc2[nH]ccc2c1", "shape": "dot", "title": "*c1ccc2[nH]ccc2c1*c1ccc2cc[nH]c2c1 substituted by*c1cccc2[nH]ccc12 substituted by*c1cccnc1", "value": 3}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2cc[nH]c2c1", "label": "*c1ccc2cc[nH]c2c1", "shape": "dot", "title": "*c1ccc2cc[nH]c2c1*c1ccc2[nH]ccc2c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc2[nH]ccc12", "label": "*c1cccc2[nH]ccc12", "shape": "dot", "title": "*c1cccc2[nH]ccc12*c1ccc2[nH]ccc2c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCC", "label": "*NCCC", "shape": "dot", "title": "*NCCC*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCN", "label": "*OCCN", "shape": "dot", "title": "*OCCN*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(F)cc1F", "label": "*c1ccc(F)cc1F", "shape": "dot", "title": "*c1ccc(F)cc1F*c1ccc(F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(N)nc1", "label": "*c1ccc(N)nc1", "shape": "dot", "title": "*c1ccc(N)nc1*c1cnc(N)nc1 substituted by*c1cccnc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cnc(N)nc1", "label": "*c1cnc(N)nc1", "shape": "dot", "title": "*c1cnc(N)nc1*c1ccc(N)nc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NN", "label": "*C(=O)NN", "shape": "dot", "title": "*C(=O)NN*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C(F)(F)F)n1", "label": "*c1cccc(C(F)(F)F)n1", "shape": "dot", "title": "*c1cccc(C(F)(F)F)n1*c1cccc(C)n1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1csc(C)n1", "label": "*c1csc(C)n1", "shape": "dot", "title": "*c1csc(C)n1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCC1CC1", "label": "*C(=O)NCC1CC1", "shape": "dot", "title": "*C(=O)NCC1CC1*C(=O)NC1CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC=C", "label": "*OCC=C", "shape": "dot", "title": "*OCC=C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccccn1", "label": "*Nc1ccccn1", "shape": "dot", "title": "*Nc1ccccn1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(N)=O", "label": "*NC(N)=O", "shape": "dot", "title": "*NC(N)=O*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC=C", "label": "*CC=C", "shape": "dot", "title": "*CC=C*CC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(S(C)(=O)=O)cc1", "label": "*c1ccc(S(C)(=O)=O)cc1", "shape": "dot", "title": "*c1ccc(S(C)(=O)=O)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC(F)F", "label": "*OC(F)F", "shape": "dot", "title": "*OC(F)F*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCCCC", "label": "*C(=O)NCCCC", "shape": "dot", "title": "*C(=O)NCCCC*C(=O)NCCC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(O)C1", "label": "*N1CCC(O)C1", "shape": "dot", "title": "*N1CCC(O)C1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(-c2ccccc2)c1", "label": "*c1cccc(-c2ccccc2)c1", "shape": "dot", "title": "*c1cccc(-c2ccccc2)c1*c1ccc(-c2ccccc2)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1ccco1", "label": "*NC(=O)c1ccco1", "shape": "dot", "title": "*NC(=O)c1ccco1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCCN1CCOCC1", "label": "*OCCCN1CCOCC1", "shape": "dot", "title": "*OCCCN1CCOCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(CC)cc1", "label": "*c1ccc(CC)cc1", "shape": "dot", "title": "*c1ccc(CC)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(OC)n1", "label": "*c1cccc(OC)n1", "shape": "dot", "title": "*c1cccc(OC)n1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCc1cccnc1", "label": "*NCc1cccnc1", "shape": "dot", "title": "*NCc1cccnc1*NCc1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCc1ccncc1", "label": "*NCc1ccncc1", "shape": "dot", "title": "*NCc1ccncc1*NCc1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=CC(=O)NO", "label": "*C=CC(=O)NO", "shape": "dot", "title": "*C=CC(=O)NO*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)NCCOC", "label": "*C(=O)NCCOC", "shape": "dot", "title": "*C(=O)NCCOC*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1cccs1", "label": "*Cc1cccs1", "shape": "dot", "title": "*Cc1cccs1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(Br)c1", "label": "*c1cccc(Br)c1", "shape": "dot", "title": "*c1cccc(Br)c1*c1ccc(Cl)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)C1CCCCC1", "label": "*NC(=O)C1CCCCC1", "shape": "dot", "title": "*NC(=O)C1CCCCC1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C#Cc1ccccn1", "label": "*C#Cc1ccccn1", "shape": "dot", "title": "*C#Cc1ccccn1*C#Cc1cccnc1 substituted by*Cl", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C#Cc1cccnc1", "label": "*C#Cc1cccnc1", "shape": "dot", "title": "*C#Cc1cccnc1*C#Cc1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ncccc1C", "label": "*c1ncccc1C", "shape": "dot", "title": "*c1ncccc1C*c1ccccn1 substituted by*c1ncccc1C(F)(F)F", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ncccc1C(F)(F)F", "label": "*c1ncccc1C(F)(F)F", "shape": "dot", "title": "*c1ncccc1C(F)(F)F*c1ncccc1C", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1c(C)noc1C", "label": "*c1c(C)noc1C", "shape": "dot", "title": "*c1c(C)noc1C*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1cccc(Cl)c1", "label": "*Cc1cccc(Cl)c1", "shape": "dot", "title": "*Cc1cccc(Cl)c1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)Nc1ccc(Cl)cc1", "label": "*NC(=O)Nc1ccc(Cl)cc1", "shape": "dot", "title": "*NC(=O)Nc1ccc(Cl)cc1*NC(=O)Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC(C)(C)C", "label": "*OC(C)(C)C", "shape": "dot", "title": "*OC(C)(C)C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccccc1Cl", "label": "*Cc1ccccc1Cl", "shape": "dot", "title": "*Cc1ccccc1Cl*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccnc1OC", "label": "*c1cccnc1OC", "shape": "dot", "title": "*c1cccnc1OC*c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1ccncc1", "label": "*NC(=O)c1ccncc1", "shape": "dot", "title": "*NC(=O)c1ccncc1*NC(=O)c1ccccn1 substituted by*NC(=O)c1cccnc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1ccccn1", "label": "*NC(=O)c1ccccn1", "shape": "dot", "title": "*NC(=O)c1ccccn1*NC(=O)c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC1CCNCC1", "label": "*OC1CCNCC1", "shape": "dot", "title": "*OC1CCNCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNC1CCCC1", "label": "*CNC1CCCC1", "shape": "dot", "title": "*CNC1CCCC1*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(Cl)nc1", "label": "*c1ccc(Cl)nc1", "shape": "dot", "title": "*c1ccc(Cl)nc1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C=C1SC(=O)NC1=O", "label": "*C=C1SC(=O)NC1=O", "shape": "dot", "title": "*C=C1SC(=O)NC1=O*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2ccccc2n1", "label": "*c1ccc2ccccc2n1", "shape": "dot", "title": "*c1ccc2ccccc2n1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cncc(OC)c1", "label": "*c1cncc(OC)c1", "shape": "dot", "title": "*c1cncc(OC)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCc1ccccc1", "label": "*OCCc1ccccc1", "shape": "dot", "title": "*OCCc1ccccc1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2[nH]ncc2c1", "label": "*c1ccc2[nH]ncc2c1", "shape": "dot", "title": "*c1ccc2[nH]ncc2c1*c1ccc2cn[nH]c2c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc2cn[nH]c2c1", "label": "*c1ccc2cn[nH]c2c1", "shape": "dot", "title": "*c1ccc2cn[nH]c2c1*c1ccc2[nH]ncc2c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC1CCCC1", "label": "*OC1CCCC1", "shape": "dot", "title": "*OC1CCCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(CO)cc1", "label": "*c1ccc(CO)cc1", "shape": "dot", "title": "*c1ccc(CO)cc1*c1cccc(CO)c1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*COc1ccccc1", "label": "*COc1ccccc1", "shape": "dot", "title": "*COc1ccccc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)OC(C)(C)C", "label": "*NC(=O)OC(C)(C)C", "shape": "dot", "title": "*NC(=O)OC(C)(C)C*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC1CCCO1", "label": "*OCC1CCCO1", "shape": "dot", "title": "*OCC1CCCO1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C)nc1", "label": "*c1ccc(C)nc1", "shape": "dot", "title": "*c1ccc(C)nc1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(=O)N(C)C", "label": "*CC(=O)N(C)C", "shape": "dot", "title": "*CC(=O)N(C)C*CC(=O)NC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(=O)NC", "label": "*CC(=O)NC", "shape": "dot", "title": "*CC(=O)NC*CC(=O)N(C)C substituted by*CC(N)=O", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(c2ccccc2)CC1", "label": "*N1CCN(c2ccccc2)CC1", "shape": "dot", "title": "*N1CCN(c2ccccc2)CC1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(Cl)cc1Cl", "label": "*c1ccc(Cl)cc1Cl", "shape": "dot", "title": "*c1ccc(Cl)cc1Cl*c1ccc(Cl)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1cccs1", "label": "*C(=O)c1cccs1", "shape": "dot", "title": "*C(=O)c1cccs1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(NC(C)=O)cc1", "label": "*c1ccc(NC(C)=O)cc1", "shape": "dot", "title": "*c1ccc(NC(C)=O)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccccc1OC", "label": "*Cc1ccccc1OC", "shape": "dot", "title": "*Cc1ccccc1OC*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1C(=O)C=CC1=O", "label": "*N1C(=O)C=CC1=O", "shape": "dot", "title": "*N1C(=O)C=CC1=O*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OS(N)(=O)=O", "label": "*OS(N)(=O)=O", "shape": "dot", "title": "*OS(N)(=O)=O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN1C(=O)c2ccccc2C1=O", "label": "*CN1C(=O)c2ccccc2C1=O", "shape": "dot", "title": "*CN1C(=O)c2ccccc2C1=O*N1C(=O)c2ccccc2C1=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1C(=O)c2ccccc2C1=O", "label": "*N1C(=O)c2ccccc2C1=O", "shape": "dot", "title": "*N1C(=O)c2ccccc2C1=O*O substituted by*CN1C(=O)c2ccccc2C1=O", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccnc(N)n1", "label": "*c1ccnc(N)n1", "shape": "dot", "title": "*c1ccnc(N)n1*c1ccncc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nccn1C", "label": "*c1nccn1C", "shape": "dot", "title": "*c1nccn1C*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cnco1", "label": "*c1cnco1", "shape": "dot", "title": "*c1cnco1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCc1cccnc1", "label": "*OCc1cccnc1", "shape": "dot", "title": "*OCc1cccnc1*OCc1ccccn1 substituted by*OCc1ccncc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCc1ccccn1", "label": "*OCc1ccccn1", "shape": "dot", "title": "*OCc1ccccn1*OC substituted by*OCc1cccnc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCc1ccncc1", "label": "*OCc1ccncc1", "shape": "dot", "title": "*OCc1ccncc1*OCc1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1cccnc1", "label": "*Oc1cccnc1", "shape": "dot", "title": "*Oc1cccnc1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CS", "label": "*CS", "shape": "dot", "title": "*CS*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC1CC1", "label": "*OCC1CC1", "shape": "dot", "title": "*OCC1CC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC(C)C", "label": "*OCC(C)C", "shape": "dot", "title": "*OCC(C)C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)OCC", "label": "*NC(=O)OCC", "shape": "dot", "title": "*NC(=O)OCC*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCN(CC)CC", "label": "*OCCN(CC)CC", "shape": "dot", "title": "*OCCN(CC)CC*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)C=C", "label": "*NC(=O)C=C", "shape": "dot", "title": "*NC(=O)C=C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc(C)cc1", "label": "*Cc1ccc(C)cc1", "shape": "dot", "title": "*Cc1ccc(C)cc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OC1CCN(C)CC1", "label": "*OC1CCN(C)CC1", "shape": "dot", "title": "*OC1CCN(C)CC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*S(=O)(=O)N1CCOCC1", "label": "*S(=O)(=O)N1CCOCC1", "shape": "dot", "title": "*S(=O)(=O)N1CCOCC1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1c[nH]cn1", "label": "*Cc1c[nH]cn1", "shape": "dot", "title": "*Cc1c[nH]cn1*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CF", "label": "*CF", "shape": "dot", "title": "*CF*CC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNC(=O)c1ccccc1", "label": "*CNC(=O)c1ccccc1", "shape": "dot", "title": "*CNC(=O)c1ccccc1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1cccnc1", "label": "*Nc1cccnc1", "shape": "dot", "title": "*Nc1cccnc1*N substituted by*Nc1ccncc1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1ccncc1", "label": "*Nc1ccncc1", "shape": "dot", "title": "*Nc1ccncc1*Nc1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ncc[nH]1", "label": "*c1ncc[nH]1", "shape": "dot", "title": "*c1ncc[nH]1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1cccc(Cl)c1", "label": "*Oc1cccc(Cl)c1", "shape": "dot", "title": "*Oc1cccc(Cl)c1*Oc1ccc(Cl)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)NCC", "label": "*NC(=O)NCC", "shape": "dot", "title": "*NC(=O)NCC*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(=O)OC)cc1", "label": "*c1ccc(C(=O)OC)cc1", "shape": "dot", "title": "*c1ccc(C(=O)OC)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(C(N)=O)c1", "label": "*c1cccc(C(N)=O)c1", "shape": "dot", "title": "*c1cccc(C(N)=O)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(P(=O)(O)O)P(=O)(O)O", "label": "*NC(P(=O)(O)O)P(=O)(O)O", "shape": "dot", "title": "*NC(P(=O)(O)O)P(=O)(O)O*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*n1cccc1", "label": "*n1cccc1", "shape": "dot", "title": "*n1cccc1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cn1nc(OC)oc1=O", "label": "*Cn1nc(OC)oc1=O", "shape": "dot", "title": "*Cn1nc(OC)oc1=O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(N)c1", "label": "*c1cccc(N)c1", "shape": "dot", "title": "*c1cccc(N)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCN", "label": "*NCCN", "shape": "dot", "title": "*NCCN*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(F)(F)F)cn1", "label": "*c1ccc(C(F)(F)F)cn1", "shape": "dot", "title": "*c1ccc(C(F)(F)F)cn1*c1ccc(C(F)(F)F)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCC(=O)NO", "label": "*CCC(=O)NO", "shape": "dot", "title": "*CCC(=O)NO*CC(=O)NO substituted by*CCCCC(=O)NO", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCCF", "label": "*OCCF", "shape": "dot", "title": "*OCCF*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCCCC(=O)NO", "label": "*CCCCC(=O)NO", "shape": "dot", "title": "*CCCCC(=O)NO*CCC(=O)NO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nn[nH]n1", "label": "*c1nn[nH]n1", "shape": "dot", "title": "*c1nn[nH]n1*C(=O)O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC#C", "label": "*OCC#C", "shape": "dot", "title": "*OCC#C*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CP(=O)(O)O", "label": "*CP(=O)(O)O", "shape": "dot", "title": "*CP(=O)(O)O*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(N(C)C)C1", "label": "*N1CCC(N(C)C)C1", "shape": "dot", "title": "*N1CCC(N(C)C)C1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccn(C)n1", "label": "*c1ccn(C)n1", "shape": "dot", "title": "*c1ccn(C)n1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1COC(N)=N1", "label": "*C1COC(N)=N1", "shape": "dot", "title": "*C1COC(N)=N1*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(N2CCOCC2)cc1", "label": "*c1ccc(N2CCOCC2)cc1", "shape": "dot", "title": "*c1ccc(N2CCOCC2)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1=NCCN1", "label": "*C1=NCCN1", "shape": "dot", "title": "*C1=NCCN1*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCNC(C)=O", "label": "*CCNC(C)=O", "shape": "dot", "title": "*CCNC(C)=O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N(C)c1ccccc1", "label": "*N(C)c1ccccc1", "shape": "dot", "title": "*N(C)c1ccccc1*Nc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(N2CCCC2)CC1", "label": "*N1CCC(N2CCCC2)CC1", "shape": "dot", "title": "*N1CCC(N2CCCC2)CC1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(CN)c1", "label": "*c1cccc(CN)c1", "shape": "dot", "title": "*c1cccc(CN)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nccc(C(F)(F)F)n1", "label": "*c1nccc(C(F)(F)F)n1", "shape": "dot", "title": "*c1nccc(C(F)(F)F)n1*c1ccnc(C(F)(F)F)n1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccnc(C(F)(F)F)n1", "label": "*c1ccnc(C(F)(F)F)n1", "shape": "dot", "title": "*c1ccnc(C(F)(F)F)n1*c1nccc(C(F)(F)F)n1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1cccc(OC)c1", "label": "*Cc1cccc(OC)c1", "shape": "dot", "title": "*Cc1cccc(OC)c1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)c1ccccc1", "label": "*C(C)c1ccccc1", "shape": "dot", "title": "*C(C)c1ccccc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC(F)(F)F", "label": "*OCC(F)(F)F", "shape": "dot", "title": "*OCC(F)(F)F*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C1CC1N", "label": "*C1CC1N", "shape": "dot", "title": "*C1CC1N*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc(OC)cc(OC)c1", "label": "*c1cc(OC)cc(OC)c1", "shape": "dot", "title": "*c1cc(OC)cc(OC)c1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN(C)Cc1ccccc1", "label": "*CN(C)Cc1ccccc1", "shape": "dot", "title": "*CN(C)Cc1ccccc1*OC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNc1ccccc1", "label": "*CNc1ccccc1", "shape": "dot", "title": "*CNc1ccccc1*CN(C)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CN(C)c1ccccc1", "label": "*CN(C)c1ccccc1", "shape": "dot", "title": "*CN(C)c1ccccc1*CNc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc2ccccc2c1", "label": "*Cc1ccc2ccccc2c1", "shape": "dot", "title": "*Cc1ccc2ccccc2c1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CNCCO", "label": "*CNCCO", "shape": "dot", "title": "*CNCCO*CO", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccc(C)cc1", "label": "*C(=O)c1ccc(C)cc1", "shape": "dot", "title": "*C(=O)c1ccc(C)cc1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1c(C)n[nH]c1C(=O)O", "label": "*Cc1c(C)n[nH]c1C(=O)O", "shape": "dot", "title": "*Cc1c(C)n[nH]c1C(=O)O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCl", "label": "*CCl", "shape": "dot", "title": "*CCl*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cncs1", "label": "*c1cncs1", "shape": "dot", "title": "*c1cncs1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C(C)C)cc1", "label": "*c1ccc(C(C)C)cc1", "shape": "dot", "title": "*c1ccc(C(C)C)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(N)C(=O)O", "label": "*CC(N)C(=O)O", "shape": "dot", "title": "*CC(N)C(=O)O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1ccc(O)cc1", "label": "*Oc1ccc(O)cc1", "shape": "dot", "title": "*Oc1ccc(O)cc1*Oc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC)c(F)c1", "label": "*c1ccc(OC)c(F)c1", "shape": "dot", "title": "*c1ccc(OC)c(F)c1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(C)=NNC(N)=S", "label": "*C(C)=NNC(N)=S", "shape": "dot", "title": "*C(C)=NNC(N)=S*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccco1", "label": "*C(=O)c1ccco1", "shape": "dot", "title": "*C(=O)c1ccco1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(O)c1ccccc1", "label": "*C(O)c1ccccc1", "shape": "dot", "title": "*C(O)c1ccccc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCCC", "label": "*NCCCC", "shape": "dot", "title": "*NCCCC*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N=[N+]=N", "label": "*N=[N+]=N", "shape": "dot", "title": "*N=[N+]=N*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc(O)cc(O)c1", "label": "*c1cc(O)cc(O)c1", "shape": "dot", "title": "*c1cc(O)cc(O)c1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCCC(O)C1", "label": "*N1CCCC(O)C1", "shape": "dot", "title": "*N1CCCC(O)C1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cn1cncn1", "label": "*Cn1cncn1", "shape": "dot", "title": "*Cn1cncn1*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1ccc(Cl)cc1O", "label": "*Oc1ccc(Cl)cc1O", "shape": "dot", "title": "*Oc1ccc(Cl)cc1O*F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cnc(N)cn1", "label": "*c1cnc(N)cn1", "shape": "dot", "title": "*c1cnc(N)cn1*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCc1cccs1", "label": "*NCc1cccs1", "shape": "dot", "title": "*NCc1cccs1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCN1CCOCC1", "label": "*NCCN1CCOCC1", "shape": "dot", "title": "*NCCN1CCOCC1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccnnc1", "label": "*c1ccnnc1", "shape": "dot", "title": "*c1ccnnc1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(F)cn1", "label": "*c1ccc(F)cn1", "shape": "dot", "title": "*c1ccc(F)cn1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cncc2ccccc12", "label": "*c1cncc2ccccc12", "shape": "dot", "title": "*c1cncc2ccccc12*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCCC1=O", "label": "*N1CCCC1=O", "shape": "dot", "title": "*N1CCCC1=O*NC(C)=O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC2CN(C)CC21", "label": "*N1CCC2CN(C)CC21", "shape": "dot", "title": "*N1CCC2CN(C)CC21*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(C)cn1", "label": "*c1ccc(C)cn1", "shape": "dot", "title": "*c1ccc(C)cn1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Oc1cccc(C)c1", "label": "*Oc1cccc(C)c1", "shape": "dot", "title": "*Oc1cccc(C)c1*Oc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NCCN(C)C", "label": "*NCCN(C)C", "shape": "dot", "title": "*NCCN(C)C*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=S)Nc1ccccc1", "label": "*NC(=S)Nc1ccccc1", "shape": "dot", "title": "*NC(=S)Nc1ccccc1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc(C(F)(F)F)cc1", "label": "*Cc1ccc(C(F)(F)F)cc1", "shape": "dot", "title": "*Cc1ccc(C(F)(F)F)cc1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC(C)C)cc1", "label": "*c1ccc(OC(C)C)cc1", "shape": "dot", "title": "*c1ccc(OC(C)C)cc1*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(OC)CC1", "label": "*N1CCC(OC)CC1", "shape": "dot", "title": "*N1CCC(OC)CC1*N1CCOCC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1ccc(Cl)c(Cl)c1", "label": "*Cc1ccc(Cl)c(Cl)c1", "shape": "dot", "title": "*Cc1ccc(Cl)c(Cl)c1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Nc1nccs1", "label": "*Nc1nccs1", "shape": "dot", "title": "*Nc1nccs1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(NC(C)=O)c1", "label": "*c1cccc(NC(C)=O)c1", "shape": "dot", "title": "*c1cccc(NC(C)=O)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nnc(C)o1", "label": "*c1nnc(C)o1", "shape": "dot", "title": "*c1nnc(C)o1*c1nc(C)no1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1nc(C)no1", "label": "*c1nc(C)no1", "shape": "dot", "title": "*c1nc(C)no1*c1nnc(C)o1 substituted by*c1noc(C)n1", "value": 2}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*Cc1cccc(F)c1", "label": "*Cc1cccc(F)c1", "shape": "dot", "title": "*Cc1cccc(F)c1*Cc1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*OCC1CCNCC1", "label": "*OCC1CCNCC1", "shape": "dot", "title": "*OCC1CCNCC1*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cc(C)ccn1", "label": "*c1cc(C)ccn1", "shape": "dot", "title": "*c1cc(C)ccn1*c1ccccn1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1ccc(OC)cc1OC", "label": "*c1ccc(OC)cc1OC", "shape": "dot", "title": "*c1ccc(OC)cc1OC*c1ccc(OC)cc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NN", "label": "*NN", "shape": "dot", "title": "*NN*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cccc(S(C)(=O)=O)c1", "label": "*c1cccc(S(C)(=O)=O)c1", "shape": "dot", "title": "*c1cccc(S(C)(=O)=O)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)NC1CCCCC1", "label": "*NC(=O)NC1CCCCC1", "shape": "dot", "title": "*NC(=O)NC1CCCCC1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*NC(=O)c1cccs1", "label": "*NC(=O)c1cccs1", "shape": "dot", "title": "*NC(=O)c1cccs1*N", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CCN1CCCC1C", "label": "*CCN1CCCC1C", "shape": "dot", "title": "*CCN1CCCC1C*F", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(O)=CC(=O)C(=O)O", "label": "*C(O)=CC(=O)C(=O)O", "shape": "dot", "title": "*C(O)=CC(=O)C(=O)O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)c1ccncc1", "label": "*C(=O)c1ccncc1", "shape": "dot", "title": "*C(=O)c1ccncc1*C(=O)c1ccccc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*CC(F)(F)F", "label": "*CC(F)(F)F", "shape": "dot", "title": "*CC(F)(F)F*CC", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N=C=S", "label": "*N=C=S", "shape": "dot", "title": "*N=C=S*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*P(=O)(O)O", "label": "*P(=O)(O)O", "shape": "dot", "title": "*P(=O)(O)O*O", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*C(=O)C=C(O)C(=O)O", "label": "*C(=O)C=C(O)C(=O)O", "shape": "dot", "title": "*C(=O)C=C(O)C(=O)O*Cl", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1cncc(F)c1", "label": "*c1cncc(F)c1", "shape": "dot", "title": "*c1cncc(F)c1*c1cccnc1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCC(N(C)C)CC1", "label": "*N1CCC(N(C)C)CC1", "shape": "dot", "title": "*N1CCC(N(C)C)CC1*N1CCN(C)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(c2ccccn2)CC1", "label": "*N1CCN(c2ccccn2)CC1", "shape": "dot", "title": "*N1CCN(c2ccccn2)CC1*N1CCN(c2ncccn2)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*N1CCN(c2ncccn2)CC1", "label": "*N1CCN(c2ncccn2)CC1", "shape": "dot", "title": "*N1CCN(c2ncccn2)CC1*N1CCN(c2ccccn2)CC1", "value": 1}, {"color": "#97c2fc", "font": {"color": "white"}, "id": "*c1noc(C)n1", "label": "*c1noc(C)n1", "shape": "dot", "title": "*c1noc(C)n1*c1nc(C)no1", "value": 1}]);
+                  edges = new vis.DataSet([{"from": "*O", "to": "*OC", "value": 2273}, {"from": "*O", "to": "*N", "value": 958}, {"from": "*O", "to": "*CO", "value": 301}, {"from": "*O", "to": "*OC(C)=O", "value": 200}, {"from": "*O", "to": "*C(=O)NO", "value": 89}, {"from": "*OC", "to": "*Cl", "value": 3455}, {"from": "*OC", "to": "*OCC", "value": 788}, {"from": "*OC", "to": "*N(C)C", "value": 491}, {"from": "*OC", "to": "*S(C)(=O)=O", "value": 332}, {"from": "*N", "to": "*NC", "value": 305}, {"from": "*N", "to": "*NC(C)=O", "value": 300}, {"from": "*N", "to": "*CN", "value": 138}, {"from": "*N", "to": "*NCc1ccccc1", "value": 104}, {"from": "*Cl", "to": "*F", "value": 4152}, {"from": "*Cl", "to": "*Br", "value": 2208}, {"from": "*Cl", "to": "*C(F)(F)F", "value": 1750}, {"from": "*Cl", "to": "*C#N", "value": 1232}, {"from": "*F", "to": "*B(O)O", "value": 60}, {"from": "*F", "to": "*SC(F)(F)F", "value": 23}, {"from": "*F", "to": "*B1OC(C)(C)C(C)(C)O1", "value": 19}, {"from": "*F", "to": "*C(F)(F)P(=O)(O)O", "value": 17}, {"from": "*CC", "to": "*C(C)C", "value": 816}, {"from": "*CC", "to": "*CCC", "value": 763}, {"from": "*CC", "to": "*C1CC1", "value": 420}, {"from": "*CC", "to": "*CCCC", "value": 383}, {"from": "*CC", "to": "*C=C", "value": 156}, {"from": "*C#N", "to": "*C(N)=O", "value": 339}, {"from": "*C#N", "to": "*C=NO", "value": 24}, {"from": "*C(=O)O", "to": "*Cl", "value": 579}, {"from": "*C(=O)O", "to": "*C(=O)OC", "value": 334}, {"from": "*C(=O)O", "to": "*CC(=O)O", "value": 201}, {"from": "*C(=O)O", "to": "*C(=O)OCC", "value": 175}, {"from": "*C(=O)O", "to": "*c1nnn[nH]1", "value": 89}, {"from": "*Br", "to": "*CNC1CC1c1ccccc1", "value": 8}, {"from": "*C(F)(F)F", "to": "*C(F)F", "value": 65}, {"from": "*C(F)(F)F", "to": "*c1nc2cc(C(N)=O)ccc2[nH]1", "value": 14}, {"from": "*C(F)(F)F", "to": "*Nc1ccccc1C(N)=O", "value": 12}, {"from": "*C(C)C", "to": "*C1CCCCC1", "value": 273}, {"from": "*C(C)C", "to": "*CC(C)C", "value": 262}, {"from": "*C(C)C", "to": "*C(C)CC", "value": 85}, {"from": "*Cc1ccccc1", "to": "*CCc1ccccc1", "value": 346}, {"from": "*Cc1ccccc1", "to": "*Cc1ccc(OC)cc1", "value": 158}, {"from": "*Cc1ccccc1", "to": "*Cc1ccc(F)cc1", "value": 148}, {"from": "*Cc1ccccc1", "to": "*Cc1ccc(Cl)cc1", "value": 124}, {"from": "*Cc1ccccc1", "to": "*CC1CCCCC1", "value": 121}, {"from": "*c1cccnc1", "to": "*c1ccncc1", "value": 490}, {"from": "*c1cccnc1", "to": "*c1ccccn1", "value": 359}, {"from": "*c1cccnc1", "to": "*c1cncnc1", "value": 165}, {"from": "*c1cccnc1", "to": "*c1cnn(C)c1", "value": 89}, {"from": "*c1cccnc1", "to": "*c1ccc(OC)nc1", "value": 78}, {"from": "*c1ccncc1", "to": "*c1ccnc(C)c1", "value": 51}, {"from": "*c1ccncc1", "to": "*c1ccncn1", "value": 48}, {"from": "*c1ccncc1", "to": "*c1ccc(C(N)=O)cc1", "value": 33}, {"from": "*c1ccncc1", "to": "*c1ccnc(OC)c1", "value": 27}, {"from": "*CCC", "to": "*CCCCC", "value": 172}, {"from": "*N(C)C", "to": "*N(CC)CC", "value": 127}, {"from": "*N(C)C", "to": "*NCCOC", "value": 43}, {"from": "*C(N)=O", "to": "*C(=O)NC", "value": 173}, {"from": "*C(N)=O", "to": "*C(=O)NC1CC1", "value": 44}, {"from": "*CO", "to": "*C(C)O", "value": 75}, {"from": "*CO", "to": "*C(C)(C)O", "value": 53}, {"from": "*CO", "to": "*CNC(C)=O", "value": 36}, {"from": "*CO", "to": "*COCc1ccccc1", "value": 22}, {"from": "*N1CCOCC1", "to": "*N1CCCCC1", "value": 323}, {"from": "*N1CCOCC1", "to": "*N1CCN(C)CC1", "value": 293}, {"from": "*N1CCOCC1", "to": "*N1CCC(O)CC1", "value": 70}, {"from": "*N1CCOCC1", "to": "*N1CCN(C(C)=O)CC1", "value": 59}, {"from": "*N1CCOCC1", "to": "*N1CCS(=O)(=O)CC1", "value": 46}, {"from": "*[N+](=O)[O-]", "to": "*Cl", "value": 1088}, {"from": "*C(C)(C)C", "to": "*Cl", "value": 382}, {"from": "*C(C)(C)C", "to": "*C(C)(C)CO", "value": 19}, {"from": "*c1ccc(OC)cc1", "to": "*c1ccc(F)cc1", "value": 356}, {"from": "*c1ccc(OC)cc1", "to": "*c1cccc(OC)c1", "value": 276}, {"from": "*c1ccc(OC)cc1", "to": "*c1ccccc1OC", "value": 204}, {"from": "*c1ccc(OC)cc1", "to": "*c1ccc(C(F)(F)F)cc1", "value": 181}, {"from": "*c1ccc(OC)cc1", "to": "*c1ccc(C#N)cc1", "value": 150}, {"from": "*c1ccc(F)cc1", "to": "*c1ccc(Cl)cc1", "value": 401}, {"from": "*c1ccc(F)cc1", "to": "*c1cccc(F)c1", "value": 265}, {"from": "*c1ccc(F)cc1", "to": "*c1ccccc1F", "value": 230}, {"from": "*c1ccc(F)cc1", "to": "*c1ccc(F)c(F)c1", "value": 92}, {"from": "*C1CCCCC1", "to": "*C1CCCC1", "value": 245}, {"from": "*C1CCCCC1", "to": "*C1CCOCC1", "value": 112}, {"from": "*C1CCCCC1", "to": "*C12CC3CC(CC(C3)C1)C2", "value": 52}, {"from": "*CC(=O)O", "to": "*CCC(=O)O", "value": 112}, {"from": "*CC(=O)O", "to": "*CC(N)=O", "value": 69}, {"from": "*CC(=O)O", "to": "*CC(=O)OC", "value": 41}, {"from": "*CC(=O)O", "to": "*C(C)C(=O)O", "value": 31}, {"from": "*c1ccccn1", "to": "*c1cnccn1", "value": 93}, {"from": "*c1ccccn1", "to": "*c1nccs1", "value": 92}, {"from": "*c1ccccn1", "to": "*c1ncccn1", "value": 83}, {"from": "*c1ccccn1", "to": "*c1cccc(C)n1", "value": 50}, {"from": "*CCCC", "to": "*CCCCCC", "value": 119}, {"from": "*CCCC", "to": "*CCC(C)C", "value": 60}, {"from": "*CCCC", "to": "*CCCCCCCC", "value": 52}, {"from": "*NC(C)=O", "to": "*NC(=O)CC", "value": 63}, {"from": "*NC(C)=O", "to": "*NC(=O)C1CC1", "value": 41}, {"from": "*NC(C)=O", "to": "*NC(=O)CCC", "value": 39}, {"from": "*NC(C)=O", "to": "*NC(=O)C(C)C", "value": 35}, {"from": "*NC", "to": "*NCC", "value": 108}, {"from": "*NC", "to": "*NC1CC1", "value": 40}, {"from": "*C(C)=O", "to": "*Cl", "value": 202}, {"from": "*C(C)=O", "to": "*C(=O)CC", "value": 81}, {"from": "*C(C)=O", "to": "*C(=O)OC(C)(C)C", "value": 42}, {"from": "*C(C)=O", "to": "*C(=O)C(F)(F)F", "value": 18}, {"from": "*c1ccc(Cl)cc1", "to": "*c1ccc(C)cc1", "value": 324}, {"from": "*c1ccc(Cl)cc1", "to": "*c1cccc(Cl)c1", "value": 297}, {"from": "*c1ccc(Cl)cc1", "to": "*c1ccccc1Cl", "value": 239}, {"from": "*c1ccc(Cl)cc1", "to": "*c1ccc(Br)cc1", "value": 164}, {"from": "*N1CCN(C)CC1", "to": "*N1CCNCC1", "value": 147}, {"from": "*N1CCN(C)CC1", "to": "*N1CCN(CC)CC1", "value": 69}, {"from": "*N1CCN(C)CC1", "to": "*N1CCN(CCO)CC1", "value": 50}, {"from": "*N1CCN(C)CC1", "to": "*N1CCCN(C)CC1", "value": 42}, {"from": "*OCc1ccccc1", "to": "*OC", "value": 281}, {"from": "*OCc1ccccc1", "to": "*SCc1ccccc1", "value": 17}, {"from": "*CN", "to": "*CCN", "value": 60}, {"from": "*CN", "to": "*C1CCCN1", "value": 14}, {"from": "*CN", "to": "*C(C)N", "value": 12}, {"from": "*CCc1ccccc1", "to": "*CCCc1ccccc1", "value": 131}, {"from": "*CCc1ccccc1", "to": "*C=Cc1ccccc1", "value": 59}, {"from": "*CCc1ccccc1", "to": "*CCOc1ccccc1", "value": 26}, {"from": "*CCc1ccccc1", "to": "*C1CC1c1ccccc1", "value": 11}, {"from": "*N1CCCCC1", "to": "*N1CCCC1", "value": 260}, {"from": "*N1CCCCC1", "to": "*N1CCC(C)CC1", "value": 61}, {"from": "*N1CCCCC1", "to": "*N1CCC(CO)CC1", "value": 23}, {"from": "*c1cccs1", "to": "*c1ccco1", "value": 227}, {"from": "*c1cccs1", "to": "*c1ccsc1", "value": 165}, {"from": "*c1cccs1", "to": "*c1ccc(Cl)s1", "value": 43}, {"from": "*C1CC1", "to": "*C1CCC1", "value": 168}, {"from": "*C1CC1", "to": "*C1CCCO1", "value": 39}, {"from": "*c1ccc(C)cc1", "to": "*c1cccc(C)c1", "value": 161}, {"from": "*c1ccc(C)cc1", "to": "*c1ccc(C)c(C)c1", "value": 25}, {"from": "*Oc1ccccc1", "to": "*OC", "value": 195}, {"from": "*Oc1ccccc1", "to": "*Sc1ccccc1", "value": 47}, {"from": "*Oc1ccccc1", "to": "*Oc1ccc(F)cc1", "value": 44}, {"from": "*Oc1ccccc1", "to": "*Oc1ccc(Cl)cc1", "value": 42}, {"from": "*Oc1ccccc1", "to": "*Oc1ccc(OC)cc1", "value": 35}, {"from": "*c1ccc(O)cc1", "to": "*c1ccc(OC)cc1", "value": 121}, {"from": "*c1ccc(O)cc1", "to": "*c1cccc(O)c1", "value": 100}, {"from": "*c1ccc(O)cc1", "to": "*c1ccccc1O", "value": 58}, {"from": "*c1ccc(O)cc1", "to": "*c1c[nH]c2ccccc12", "value": 54}, {"from": "*c1ccc(O)cc1", "to": "*c1ccc(O)c(O)c1", "value": 31}, {"from": "*Nc1ccccc1", "to": "*N", "value": 101}, {"from": "*Nc1ccccc1", "to": "*Nc1ccc(OC)cc1", "value": 49}, {"from": "*Nc1ccccc1", "to": "*Nc1ccc(F)cc1", "value": 42}, {"from": "*Nc1ccccc1", "to": "*Nc1ccc(C)cc1", "value": 38}, {"from": "*Nc1ccccc1", "to": "*Nc1ccc(Cl)cc1", "value": 36}, {"from": "*S(C)(=O)=O", "to": "*S(=O)(=O)CC", "value": 50}, {"from": "*S(C)(=O)=O", "to": "*S(=O)(=O)N(C)C", "value": 46}, {"from": "*S(C)(=O)=O", "to": "*CS(C)(=O)=O", "value": 18}, {"from": "*N1CCCC1", "to": "*N1CCC1", "value": 49}, {"from": "*N1CCCC1", "to": "*N1CCc2ccccc2C1", "value": 25}, {"from": "*c1cccc(OC)c1", "to": "*c1cccc(C#N)c1", "value": 88}, {"from": "*c1cccc(OC)c1", "to": "*c1ccccc1C#N", "value": 30}, {"from": "*c1cccc(OC)c1", "to": "*c1cccc(CO)c1", "value": 27}, {"from": "*CN1CCOCC1", "to": "*CN1CCCCC1", "value": 89}, {"from": "*CN1CCOCC1", "to": "*CN1CCN(C)CC1", "value": 85}, {"from": "*I", "to": "*Cl", "value": 522}, {"from": "*C(=O)OCC", "to": "*C(=O)OCc1ccccc1", "value": 30}, {"from": "*S(N)(=O)=O", "to": "*OC", "value": 250}, {"from": "*NCc1ccccc1", "to": "*NCCc1ccccc1", "value": 62}, {"from": "*NCc1ccccc1", "to": "*NC1CCCCC1", "value": 46}, {"from": "*NCc1ccccc1", "to": "*NCc1ccc(OC)cc1", "value": 35}, {"from": "*NCc1ccccc1", "to": "*N(C)Cc1ccccc1", "value": 32}, {"from": "*C(=O)NC", "to": "*C(=O)N(C)C", "value": 139}, {"from": "*C(=O)NC", "to": "*C(=O)NCC", "value": 67}, {"from": "*C(=O)NC", "to": "*C(=O)NC(C)C", "value": 44}, {"from": "*CN(C)C", "to": "*OC", "value": 96}, {"from": "*CN(C)C", "to": "*CNC", "value": 63}, {"from": "*CN(C)C", "to": "*CNCC", "value": 25}, {"from": "*CN(C)C", "to": "*CNCc1ccccc1", "value": 16}, {"from": "*CN(C)C", "to": "*CNC(C)C", "value": 15}, {"from": "*c1cccc(Cl)c1", "to": "*c1cc(Cl)cc(Cl)c1", "value": 46}, {"from": "*C(=O)N(C)C", "to": "*C(=O)N1CCOCC1", "value": 73}, {"from": "*SC", "to": "*OC", "value": 294}, {"from": "*SC", "to": "*SCC", "value": 40}, {"from": "*C(=O)c1ccccc1", "to": "*Cc1ccccc1", "value": 110}, {"from": "*C(=O)c1ccccc1", "to": "*S(=O)(=O)c1ccccc1", "value": 55}, {"from": "*C(=O)c1ccccc1", "to": "*C(=O)c1ccc(F)cc1", "value": 47}, {"from": "*C(=O)c1ccccc1", "to": "*C(=O)c1ccc(Cl)cc1", "value": 38}, {"from": "*C(=O)c1ccccc1", "to": "*C(=O)c1ccc(OC)cc1", "value": 36}, {"from": "*CN1CCCCC1", "to": "*CN1CCCC1", "value": 76}, {"from": "*c1ccccc1Cl", "to": "*c1ccccc1C", "value": 154}, {"from": "*c1ccccc1Cl", "to": "*c1ccccc1C(F)(F)F", "value": 54}, {"from": "*c1ccccc1Cl", "to": "*c1cccc(Cl)c1Cl", "value": 39}, {"from": "*C(=O)NO", "to": "*CC(=O)NO", "value": 43}, {"from": "*CCO", "to": "*CC", "value": 155}, {"from": "*CCO", "to": "*CCCO", "value": 69}, {"from": "*c1ccco1", "to": "*c1ccoc1", "value": 101}, {"from": "*c1ccco1", "to": "*c1ccc[nH]1", "value": 31}, {"from": "*CCN", "to": "*CCCN", "value": 57}, {"from": "*CCC(=O)O", "to": "*CCCC(=O)O", "value": 54}, {"from": "*CCC(=O)O", "to": "*C=CC(=O)O", "value": 32}, {"from": "*c1cccc(F)c1", "to": "*c1cc(F)cc(F)c1", "value": 58}, {"from": "*OC(C)C", "to": "*OC", "value": 319}, {"from": "*NS(C)(=O)=O", "to": "*OC", "value": 159}, {"from": "*CCCCC", "to": "*CCCCCCC", "value": 74}, {"from": "*c1ccccc1F", "to": "*c1c(F)cccc1F", "value": 45}, {"from": "*C(=O)N1CCOCC1", "to": "*C(=O)N1CCCCC1", "value": 53}, {"from": "*C(=O)N1CCOCC1", "to": "*C(=O)N1CCN(C)CC1", "value": 53}, {"from": "*C(=O)N1CCOCC1", "to": "*C(=O)N1CCCC1", "value": 52}, {"from": "*C(=O)N1CCOCC1", "to": "*C(=O)N(CC)CC", "value": 35}, {"from": "*OC(F)(F)F", "to": "*Cl", "value": 456}, {"from": "*COC", "to": "*CC", "value": 142}, {"from": "*COC", "to": "*COCC", "value": 49}, {"from": "*NC1CCCCC1", "to": "*NC1CCCC1", "value": 38}, {"from": "*C=O", "to": "*Cl", "value": 106}, {"from": "*C(=O)Nc1ccccc1", "to": "*C(=O)NCc1ccccc1", "value": 58}, {"from": "*C(=O)Nc1ccccc1", "to": "*C(=O)NC1CCCCC1", "value": 38}, {"from": "*C(=O)Nc1ccccc1", "to": "*C(=O)Nc1ccc(F)cc1", "value": 28}, {"from": "*C(=O)Nc1ccccc1", "to": "*C(=O)Nc1ccc(Cl)cc1", "value": 23}, {"from": "*OCCCC", "to": "*OC", "value": 120}, {"from": "*c1ccc2ccccc2c1", "to": "*c1cccc2ccccc12", "value": 180}, {"from": "*c1ccc2ccccc2c1", "to": "*c1ccc(-c2ccccc2)cc1", "value": 65}, {"from": "*c1ccc2ccccc2c1", "to": "*c1cc2ccccc2s1", "value": 43}, {"from": "*c1ccc2ccccc2c1", "to": "*c1csc2ccccc12", "value": 34}, {"from": "*c1ccc2ccccc2c1", "to": "*c1ccc2ncccc2c1", "value": 26}, {"from": "*c1cccc2ccccc12", "to": "*c1cccc2cccnc12", "value": 31}, {"from": "*c1cccc2ccccc12", "to": "*c1cccc2ncccc12", "value": 20}, {"from": "*c1cccc(C#N)c1", "to": "*c1cccc(C(C)=O)c1", "value": 25}, {"from": "*OCCC", "to": "*OC", "value": 180}, {"from": "*NC(=O)c1ccccc1", "to": "*N", "value": 84}, {"from": "*NC(=O)c1ccccc1", "to": "*NC(=O)Cc1ccccc1", "value": 39}, {"from": "*NC(=O)c1ccccc1", "to": "*NC(=O)c1ccc(OC)cc1", "value": 31}, {"from": "*NC(=O)c1ccccc1", "to": "*NC(=O)Nc1ccccc1", "value": 28}, {"from": "*NC(=O)c1ccccc1", "to": "*NC(=O)c1cccnc1", "value": 26}, {"from": "*c1cnn(C)c1", "to": "*c1cn[nH]c1", "value": 72}, {"from": "*c1cnn(C)c1", "to": "*c1ccnn1C", "value": 37}, {"from": "*C(=O)NCc1ccccc1", "to": "*C(=O)NCCc1ccccc1", "value": 40}, {"from": "*n1ccnc1", "to": "*Cl", "value": 65}, {"from": "*n1ccnc1", "to": "*n1cncn1", "value": 33}, {"from": "*n1ccnc1", "to": "*n1ccnc1C", "value": 18}, {"from": "*NC(C)C", "to": "*N", "value": 69}, {"from": "*NC(C)C", "to": "*NC(C)(C)C", "value": 27}, {"from": "*NC(C)C", "to": "*NCC1CC1", "value": 25}, {"from": "*c1ccc2c(c1)OCO2", "to": "*c1ccc(OC)cc1", "value": 87}, {"from": "*c1ccc2c(c1)OCO2", "to": "*c1ccc2c(c1)OCCO2", "value": 62}, {"from": "*CN1CCCC1", "to": "*CN(CC)CC", "value": 52}, {"from": "*C#C", "to": "*Cl", "value": 108}, {"from": "*c1ccc(OC)nc1", "to": "*c1ccc(OC(C)C)nc1", "value": 6}, {"from": "*C1CCNCC1", "to": "*C1CCN(C)CC1", "value": 59}, {"from": "*C1CCNCC1", "to": "*C1CCNC1", "value": 23}, {"from": "*C1CCNCC1", "to": "*C1=CCNCC1", "value": 13}, {"from": "*CCN(C)C", "to": "*CC", "value": 54}, {"from": "*CCN(C)C", "to": "*CCCN(C)C", "value": 37}, {"from": "*CCN(C)C", "to": "*CCNC", "value": 26}, {"from": "*Cc1ccncc1", "to": "*Cc1ccccc1", "value": 95}, {"from": "*OCCOC", "to": "*OC", "value": 120}, {"from": "*C1CCOCC1", "to": "*C1CCOC1", "value": 50}, {"from": "*C1CCOCC1", "to": "*C1CCN(C(C)=O)CC1", "value": 27}, {"from": "*Cn1ccnc1", "to": "*O", "value": 59}, {"from": "*c1ccc(C(=O)O)cc1", "to": "*c1cccc(C(=O)O)c1", "value": 63}, {"from": "*OCC(=O)O", "to": "*OC", "value": 117}, {"from": "*OCCO", "to": "*OC", "value": 101}, {"from": "*OCCN(C)C", "to": "*OC", "value": 77}, {"from": "*c1ccc(N)cc1", "to": "*c1ccc(OC)cc1", "value": 62}, {"from": "*c1ccc(C(F)(F)F)cc1", "to": "*c1cccc(C(F)(F)F)c1", "value": 124}, {"from": "*c1ccc(C(F)(F)F)cc1", "to": "*c1ccc(OC(F)(F)F)cc1", "value": 73}, {"from": "*c1ccc(C(F)(F)F)cc1", "to": "*c1ccc(C(C)(C)C)cc1", "value": 49}, {"from": "*c1ccc(C(F)(F)F)cc1", "to": "*c1ccc(C(F)(F)F)nc1", "value": 33}, {"from": "*C(=O)NC1CCCCC1", "to": "*C(=O)NC1CCCC1", "value": 26}, {"from": "*c1nc2ccccc2s1", "to": "*c1nc2ccccc2o1", "value": 52}, {"from": "*c1nc2ccccc2s1", "to": "*c1nc2ccccc2[nH]1", "value": 32}, {"from": "*CC1CC1", "to": "*CC", "value": 117}, {"from": "*c1cccc(C(F)(F)F)c1", "to": "*c1cccc(OC(F)(F)F)c1", "value": 44}, {"from": "*C(=O)NC(C)C", "to": "*C(=O)NCCC", "value": 31}, {"from": "*C(=O)NC(C)C", "to": "*C(=O)NC(C)(C)C", "value": 27}, {"from": "*NCCO", "to": "*N", "value": 63}, {"from": "*NCCO", "to": "*NCCCO", "value": 29}, {"from": "*C(=O)NCCO", "to": "*C(=O)O", "value": 33}, {"from": "*c1cc2ccccc2s1", "to": "*c1cc2ccccc2o1", "value": 39}, {"from": "*c1cc2ccccc2s1", "to": "*c1cc2ccccc2[nH]1", "value": 19}, {"from": "*CN1CCN(C)CC1", "to": "*CN1CCNCC1", "value": 25}, {"from": "*OCCN1CCOCC1", "to": "*OC", "value": 68}, {"from": "*CCN1CCOCC1", "to": "*CCN1CCCCC1", "value": 43}, {"from": "*c1cnc2ccccc2c1", "to": "*c1cccnc1", "value": 36}, {"from": "*OCCCN(C)C", "to": "*OC", "value": 51}, {"from": "*Cc1cccnc1", "to": "*Cc1ccccc1", "value": 112}, {"from": "*C(=N)N", "to": "*OC", "value": 100}, {"from": "*Cc1ccccn1", "to": "*Cc1ccccc1", "value": 105}, {"from": "*CC#N", "to": "*CC", "value": 49}, {"from": "*c1ccc(Cl)c(Cl)c1", "to": "*c1ccc(Cl)cc1", "value": 121}, {"from": "*c1ccc(N(C)C)cc1", "to": "*c1ccc(OC)cc1", "value": 62}, {"from": "*S(=O)(=O)c1ccccc1", "to": "*S(=O)(=O)c1ccc(Cl)cc1", "value": 31}, {"from": "*S", "to": "*O", "value": 77}, {"from": "*OCCN1CCCC1", "to": "*OC", "value": 51}, {"from": "*CCOC", "to": "*CC", "value": 110}, {"from": "*CCOC", "to": "*CC1CCCO1", "value": 23}, {"from": "*c1ccc(OC)c(OC)c1", "to": "*c1ccc(OC)cc1", "value": 103}, {"from": "*c1ccc([N+](=O)[O-])cc1", "to": "*c1ccc(OC)cc1", "value": 134}, {"from": "*c1cccc([N+](=O)[O-])c1", "to": "*c1ccc(Cl)cc1", "value": 74}, {"from": "*C#Cc1ccccc1", "to": "*Cl", "value": 37}, {"from": "*C(=O)Nc1cccnc1", "to": "*O", "value": 27}, {"from": "*C(=O)Nc1cccnc1", "to": "*C(=O)Nc1ccncc1", "value": 20}, {"from": "*OCCN1CCCCC1", "to": "*OC", "value": 38}, {"from": "*c1ccc(S(N)(=O)=O)cc1", "to": "*c1ccc(F)cc1", "value": 27}, {"from": "*CCN1CCCC1", "to": "*CCN1CCCCC1", "value": 50}, {"from": "*CCN1CCCC1", "to": "*CCN(CC)CC", "value": 25}, {"from": "*c1cc[nH]n1", "to": "*c1cccnc1", "value": 47}, {"from": "*OCCCN1CCCCC1", "to": "*OC", "value": 48}, {"from": "*OCCCN1CCCCC1", "to": "*OCCCN1CCCC1", "value": 31}, {"from": "*c1ccc(C(C)=O)cc1", "to": "*c1ccc(OC)cc1", "value": 40}, {"from": "*n1cccn1", "to": "*Cl", "value": 44}, {"from": "*NS(N)(=O)=O", "to": "*O", "value": 27}, {"from": "*NS(=O)(=O)c1ccccc1", "to": "*O", "value": 36}, {"from": "*NS(=O)(=O)c1ccccc1", "to": "*NS(=O)(=O)c1ccc(C)cc1", "value": 22}, {"from": "*c1ccc(OCC)cc1", "to": "*c1ccc(OC)cc1", "value": 44}, {"from": "*C=C1SC(=S)NC1=O", "to": "*O", "value": 23}, {"from": "*c1ccc2[nH]ccc2c1", "to": "*c1cccnc1", "value": 28}, {"from": "*c1ccc2[nH]ccc2c1", "to": "*c1ccc2cc[nH]c2c1", "value": 21}, {"from": "*c1ccc2[nH]ccc2c1", "to": "*c1cccc2[nH]ccc12", "value": 18}, {"from": "*NCCC", "to": "*N", "value": 49}, {"from": "*OCCN", "to": "*OC", "value": 33}, {"from": "*c1ccc(F)cc1F", "to": "*c1ccc(F)cc1", "value": 82}, {"from": "*c1ccc(N)nc1", "to": "*c1cccnc1", "value": 37}, {"from": "*c1ccc(N)nc1", "to": "*c1cnc(N)nc1", "value": 21}, {"from": "*C(=O)NN", "to": "*C(=O)O", "value": 21}, {"from": "*c1cccc(C)n1", "to": "*c1cccc(C(F)(F)F)n1", "value": 13}, {"from": "*c1csc(C)n1", "to": "*c1ccccn1", "value": 27}, {"from": "*C(=O)NC1CC1", "to": "*C(=O)NCC1CC1", "value": 21}, {"from": "*OCC=C", "to": "*OC", "value": 71}, {"from": "*Nc1ccccn1", "to": "*N", "value": 24}, {"from": "*NC(N)=O", "to": "*N", "value": 40}, {"from": "*CC=C", "to": "*CC", "value": 109}, {"from": "*c1ccc(S(C)(=O)=O)cc1", "to": "*c1ccc(OC)cc1", "value": 47}, {"from": "*OC(F)F", "to": "*OC", "value": 125}, {"from": "*C(=O)NCCC", "to": "*C(=O)NCCCC", "value": 22}, {"from": "*N1CCC(O)C1", "to": "*N1CCOCC1", "value": 43}, {"from": "*c1ccc(-c2ccccc2)cc1", "to": "*c1cccc(-c2ccccc2)c1", "value": 28}, {"from": "*NC(=O)c1ccco1", "to": "*N", "value": 27}, {"from": "*OCCCN1CCOCC1", "to": "*OC", "value": 36}, {"from": "*c1ccc(CC)cc1", "to": "*c1ccc(OC)cc1", "value": 63}, {"from": "*c1cccc(OC)n1", "to": "*c1ccccn1", "value": 18}, {"from": "*NCc1cccnc1", "to": "*NCc1ccncc1", "value": 29}, {"from": "*C=CC(=O)NO", "to": "*OC", "value": 59}, {"from": "*C(=O)NCCOC", "to": "*C(=O)O", "value": 24}, {"from": "*Cc1cccs1", "to": "*Cc1ccccc1", "value": 60}, {"from": "*c1cccc(Br)c1", "to": "*c1ccc(Cl)cc1", "value": 60}, {"from": "*NC(=O)C1CCCCC1", "to": "*N", "value": 30}, {"from": "*C#Cc1ccccn1", "to": "*Cl", "value": 20}, {"from": "*C#Cc1ccccn1", "to": "*C#Cc1cccnc1", "value": 18}, {"from": "*c1ncccc1C", "to": "*c1ccccn1", "value": 36}, {"from": "*c1ncccc1C", "to": "*c1ncccc1C(F)(F)F", "value": 12}, {"from": "*c1c(C)noc1C", "to": "*Cl", "value": 42}, {"from": "*Cc1cccc(Cl)c1", "to": "*Cc1ccccc1", "value": 75}, {"from": "*NC(=O)Nc1ccccc1", "to": "*NC(=O)Nc1ccc(Cl)cc1", "value": 13}, {"from": "*OC(C)(C)C", "to": "*OC", "value": 33}, {"from": "*Cc1ccccc1Cl", "to": "*Cc1ccccc1", "value": 81}, {"from": "*c1cccnc1OC", "to": "*c1ccncc1", "value": 23}, {"from": "*NC(=O)c1ccncc1", "to": "*NC(=O)c1cccnc1", "value": 24}, {"from": "*NC(=O)c1ccncc1", "to": "*NC(=O)c1ccccn1", "value": 19}, {"from": "*OC1CCNCC1", "to": "*OC", "value": 24}, {"from": "*CNC1CCCC1", "to": "*C(=O)O", "value": 11}, {"from": "*c1ccc(Cl)nc1", "to": "*c1cccnc1", "value": 24}, {"from": "*C=C1SC(=O)NC1=O", "to": "*Cl", "value": 26}, {"from": "*c1ccc2ccccc2n1", "to": "*c1ccccn1", "value": 27}, {"from": "*c1cncc(OC)c1", "to": "*c1cccnc1", "value": 42}, {"from": "*OCCc1ccccc1", "to": "*OC", "value": 45}, {"from": "*c1ccc2[nH]ncc2c1", "to": "*c1ccc2cn[nH]c2c1", "value": 21}, {"from": "*OC1CCCC1", "to": "*OC", "value": 64}, {"from": "*c1cccc(CO)c1", "to": "*c1ccc(CO)cc1", "value": 26}, {"from": "*COc1ccccc1", "to": "*Cc1ccccc1", "value": 35}, {"from": "*NC(=O)OC(C)(C)C", "to": "*N", "value": 44}, {"from": "*OCC1CCCO1", "to": "*OC", "value": 15}, {"from": "*c1ccc(C)nc1", "to": "*c1cccnc1", "value": 39}, {"from": "*CC(=O)N(C)C", "to": "*CC(=O)NC", "value": 25}, {"from": "*N1CCN(c2ccccc2)CC1", "to": "*N1CCOCC1", "value": 22}, {"from": "*c1ccc(Cl)cc1Cl", "to": "*c1ccc(Cl)cc1", "value": 84}, {"from": "*C(=O)c1cccs1", "to": "*C(=O)c1ccccc1", "value": 30}, {"from": "*c1ccc(NC(C)=O)cc1", "to": "*c1ccc(OC)cc1", "value": 26}, {"from": "*Cc1ccccc1OC", "to": "*Cc1ccccc1", "value": 56}, {"from": "*N1C(=O)C=CC1=O", "to": "*Cl", "value": 26}, {"from": "*OS(N)(=O)=O", "to": "*O", "value": 49}, {"from": "*CN1C(=O)c2ccccc2C1=O", "to": "*N1C(=O)c2ccccc2C1=O", "value": 12}, {"from": "*c1ccnc(N)n1", "to": "*c1ccncc1", "value": 20}, {"from": "*c1nccn1C", "to": "*c1ccccn1", "value": 30}, {"from": "*c1cnco1", "to": "*OC", "value": 30}, {"from": "*OCc1cccnc1", "to": "*OCc1ccccn1", "value": 36}, {"from": "*OCc1cccnc1", "to": "*OCc1ccncc1", "value": 30}, {"from": "*CC(=O)NC", "to": "*CC(N)=O", "value": 26}, {"from": "*Oc1cccnc1", "to": "*OC", "value": 33}, {"from": "*CS", "to": "*N", "value": 27}, {"from": "*OCC1CC1", "to": "*OC", "value": 64}, {"from": "*OCC(C)C", "to": "*OC", "value": 68}, {"from": "*NC(=O)OCC", "to": "*N", "value": 19}, {"from": "*OCCN(CC)CC", "to": "*OC", "value": 33}, {"from": "*NC(=O)C=C", "to": "*OC", "value": 51}, {"from": "*Cc1ccc(C)cc1", "to": "*Cc1ccccc1", "value": 87}, {"from": "*OC1CCN(C)CC1", "to": "*OC", "value": 23}, {"from": "*S(=O)(=O)N1CCOCC1", "to": "*OC", "value": 35}, {"from": "*Cc1c[nH]cn1", "to": "*O", "value": 29}, {"from": "*CF", "to": "*CC", "value": 46}, {"from": "*CNC(=O)c1ccccc1", "to": "*OC", "value": 11}, {"from": "*Nc1cccnc1", "to": "*N", "value": 20}, {"from": "*Nc1cccnc1", "to": "*Nc1ccncc1", "value": 17}, {"from": "*c1ncc[nH]1", "to": "*c1ccccn1", "value": 23}, {"from": "*Oc1cccc(Cl)c1", "to": "*Oc1ccc(Cl)cc1", "value": 24}, {"from": "*NC(=O)NCC", "to": "*N", "value": 29}, {"from": "*c1ccc(C(=O)OC)cc1", "to": "*c1ccc(OC)cc1", "value": 29}, {"from": "*c1cccc(C(N)=O)c1", "to": "*c1cccnc1", "value": 30}, {"from": "*NC(P(=O)(O)O)P(=O)(O)O", "to": "*Cl", "value": 16}, {"from": "*n1cccc1", "to": "*OC", "value": 29}, {"from": "*Cn1nc(OC)oc1=O", "to": "*O", "value": 11}, {"from": "*c1cccc(N)c1", "to": "*c1cccnc1", "value": 40}, {"from": "*NCCN", "to": "*N", "value": 34}, {"from": "*c1ccc(C(F)(F)F)cn1", "to": "*c1ccc(C(F)(F)F)cc1", "value": 21}, {"from": "*CC(=O)NO", "to": "*CCC(=O)NO", "value": 36}, {"from": "*OCCF", "to": "*OC", "value": 92}, {"from": "*CCC(=O)NO", "to": "*CCCCC(=O)NO", "value": 18}, {"from": "*c1nn[nH]n1", "to": "*C(=O)O", "value": 59}, {"from": "*OCC#C", "to": "*OC", "value": 31}, {"from": "*CP(=O)(O)O", "to": "*OC", "value": 17}, {"from": "*N1CCC(N(C)C)C1", "to": "*N1CCN(C)CC1", "value": 30}, {"from": "*c1ccn(C)n1", "to": "*c1cccnc1", "value": 29}, {"from": "*C1COC(N)=N1", "to": "*O", "value": 17}, {"from": "*c1ccc(N2CCOCC2)cc1", "to": "*c1ccc(OC)cc1", "value": 13}, {"from": "*C1=NCCN1", "to": "*Cl", "value": 24}, {"from": "*CCNC(C)=O", "to": "*O", "value": 17}, {"from": "*N(C)c1ccccc1", "to": "*Nc1ccccc1", "value": 26}, {"from": "*N1CCC(N2CCCC2)CC1", "to": "*N1CCN(C)CC1", "value": 21}, {"from": "*c1cccc(CN)c1", "to": "*c1cccnc1", "value": 11}, {"from": "*c1nccc(C(F)(F)F)n1", "to": "*c1ccnc(C(F)(F)F)n1", "value": 13}, {"from": "*Cc1cccc(OC)c1", "to": "*Cc1ccccc1", "value": 77}, {"from": "*C(C)c1ccccc1", "to": "*Cc1ccccc1", "value": 53}, {"from": "*OCC(F)(F)F", "to": "*OC", "value": 62}, {"from": "*C1CC1N", "to": "*Cl", "value": 13}, {"from": "*c1cc(OC)cc(OC)c1", "to": "*c1ccc(OC)cc1", "value": 24}, {"from": "*CN(C)Cc1ccccc1", "to": "*OC", "value": 21}, {"from": "*CNc1ccccc1", "to": "*CN(C)c1ccccc1", "value": 12}, {"from": "*Cc1ccc2ccccc2c1", "to": "*Cc1ccccc1", "value": 65}, {"from": "*CNCCO", "to": "*CO", "value": 11}, {"from": "*C(=O)c1ccc(C)cc1", "to": "*C(=O)c1ccccc1", "value": 35}, {"from": "*Cc1c(C)n[nH]c1C(=O)O", "to": "*O", "value": 15}, {"from": "*CCl", "to": "*O", "value": 18}, {"from": "*c1cncs1", "to": "*c1cccnc1", "value": 40}, {"from": "*c1ccc(C(C)C)cc1", "to": "*c1ccc(OC)cc1", "value": 35}, {"from": "*CC(N)C(=O)O", "to": "*O", "value": 21}, {"from": "*Oc1ccc(O)cc1", "to": "*Oc1ccccc1", "value": 12}, {"from": "*c1ccc(OC)c(F)c1", "to": "*c1ccc(OC)cc1", "value": 28}, {"from": "*C(C)=NNC(N)=S", "to": "*O", "value": 20}, {"from": "*C(=O)c1ccco1", "to": "*C(=O)c1ccccc1", "value": 31}, {"from": "*C(O)c1ccccc1", "to": "*Cc1ccccc1", "value": 22}, {"from": "*NCCCC", "to": "*N", "value": 32}, {"from": "*N=[N+]=N", "to": "*O", "value": 47}, {"from": "*OCc1ccccn1", "to": "*OC", "value": 38}, {"from": "*c1cc(O)cc(O)c1", "to": "*N", "value": 9}, {"from": "*N1CCCC(O)C1", "to": "*N1CCOCC1", "value": 19}, {"from": "*Cn1cncn1", "to": "*Cl", "value": 21}, {"from": "*Oc1ccc(Cl)cc1O", "to": "*F", "value": 11}, {"from": "*c1cnc(N)cn1", "to": "*Cl", "value": 12}, {"from": "*NCc1cccs1", "to": "*N", "value": 13}, {"from": "*NCCN1CCOCC1", "to": "*N1CCOCC1", "value": 31}, {"from": "*c1ccnnc1", "to": "*c1cccnc1", "value": 22}, {"from": "*c1ccc(F)cn1", "to": "*c1ccccn1", "value": 37}, {"from": "*c1cncc2ccccc12", "to": "*c1cccnc1", "value": 25}, {"from": "*N1CCCC1=O", "to": "*NC(C)=O", "value": 23}, {"from": "*N1CCC2CN(C)CC21", "to": "*O", "value": 7}, {"from": "*c1ccc(C)cn1", "to": "*c1ccccn1", "value": 32}, {"from": "*Oc1cccc(C)c1", "to": "*Oc1ccccc1", "value": 15}, {"from": "*NCCN(C)C", "to": "*N1CCOCC1", "value": 34}, {"from": "*NC(=S)Nc1ccccc1", "to": "*N", "value": 12}, {"from": "*Cc1ccc(C(F)(F)F)cc1", "to": "*Cc1ccccc1", "value": 49}, {"from": "*c1ccc(OC(C)C)cc1", "to": "*c1ccc(OC)cc1", "value": 18}, {"from": "*N1CCC(OC)CC1", "to": "*N1CCOCC1", "value": 33}, {"from": "*Cc1ccc(Cl)c(Cl)c1", "to": "*Cc1ccccc1", "value": 45}, {"from": "*Nc1nccs1", "to": "*N", "value": 11}, {"from": "*c1cccc(NC(C)=O)c1", "to": "*c1cccnc1", "value": 17}, {"from": "*c1nnc(C)o1", "to": "*c1nc(C)no1", "value": 18}, {"from": "*Cc1cccc(F)c1", "to": "*Cc1ccccc1", "value": 69}, {"from": "*OCC1CCNCC1", "to": "*O", "value": 10}, {"from": "*c1cc(C)ccn1", "to": "*c1ccccn1", "value": 30}, {"from": "*c1ccc(OC)cc1OC", "to": "*c1ccc(OC)cc1", "value": 26}, {"from": "*NN", "to": "*O", "value": 24}, {"from": "*c1cccc(S(C)(=O)=O)c1", "to": "*c1cccnc1", "value": 20}, {"from": "*NC(=O)NC1CCCCC1", "to": "*N", "value": 12}, {"from": "*NC(=O)c1cccs1", "to": "*N", "value": 29}, {"from": "*CCN1CCCC1C", "to": "*F", "value": 11}, {"from": "*C(O)=CC(=O)C(=O)O", "to": "*O", "value": 17}, {"from": "*C(=O)c1ccncc1", "to": "*C(=O)c1ccccc1", "value": 27}, {"from": "*CC(F)(F)F", "to": "*CC", "value": 77}, {"from": "*N=C=S", "to": "*Cl", "value": 18}, {"from": "*P(=O)(O)O", "to": "*O", "value": 26}, {"from": "*C(=O)C=C(O)C(=O)O", "to": "*Cl", "value": 17}, {"from": "*c1cncc(F)c1", "to": "*c1cccnc1", "value": 33}, {"from": "*N1CCC(N(C)C)CC1", "to": "*N1CCN(C)CC1", "value": 32}, {"from": "*N1CCN(c2ccccn2)CC1", "to": "*N1CCN(c2ncccn2)CC1", "value": 16}, {"from": "*O", "to": "*N1C(=O)c2ccccc2C1=O", "value": 13}, {"from": "*c1noc(C)n1", "to": "*c1nc(C)no1", "value": 20}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+                    network.on("selectNode", neighbourhoodHighlight);
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
